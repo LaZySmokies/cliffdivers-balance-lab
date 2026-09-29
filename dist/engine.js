@@ -8,7 +8,7 @@ const CliffEngine = (() => {
     night:[{name:'Aller · nuit',duration:60,environment:'night',movement:'sprint',wind:true},{name:'Récolte · nuit',duration:60,environment:'night',movement:'idle',wind:false},{name:'Retour · nuit',duration:60,environment:'night',movement:'run',wind:true}],
     rain:[{name:'Aller · pluie',duration:60,environment:'rain',movement:'sprint',wind:true},{name:'Attente · abri',duration:60,environment:'shade',movement:'idle',wind:false},{name:'Retour · pluie',duration:60,environment:'rain',movement:'run',wind:true}]
   };
-  function defaults(){return {slots:{T1:'solar',T2:'lamp',S1:'dynamo',S2:'standby',D1:'battery',D2:null},on:{lamp:true,burner:true},policy:'auto',death:'famine',drainBasis:'base',initialPercent:100,health:25,fuel:2,rateScale:1,baseMaxEnergy:100,basePassiveDrainPercent:.3,starvationDamage:1,safeZoneRegenRate:20,agonyDuration:300,fuelSecondsPerUnit:30,scenarioName:'Falaise et grotte',scenario:clone(presets.mixed),probabilistic:{biome:'altanis',iterations:500,poiCount:3,seed:42,distanceMin:400,distanceMax:800,speed:8,detourChance:.35,injuryChance:.12,nightChance:.15,safePoiChance:.18},actions:[]};}
+  function defaults(){return {slots:{T1:'solar',T2:'lamp',S1:'dynamo',S2:'standby',D1:'battery',D2:null},on:{lamp:true,burner:true},policy:'auto',death:'famine',drainBasis:'base',initialPercent:100,health:25,fuel:2,rateScale:1,baseMaxEnergy:100,basePassiveDrainPercent:.3,starvationDamage:1,safeZoneRegenRate:20,agonyDuration:300,fuelSecondsPerUnit:30,scenarioName:'Falaise et grotte',scenario:clone(presets.mixed),probabilistic:{iterations:500,seed:42},actions:[]};}
   function validate(c,defs){
     const errors=[],seen=new Set(),byId=Object.fromEntries(defs.map(m=>[m.id,m]));
     for(const [slot,id] of Object.entries(c.slots||{})){
@@ -24,7 +24,12 @@ const CliffEngine = (() => {
       if(!['sun','night','rain','cave','shade','safe'].includes(s.environment))errors.push('Environnement invalide.');
       if(!['idle','run','sprint','slide','climb'].includes(s.movement))errors.push('Mouvement invalide.');
       if(s.drainMultiplier!==undefined&&(!Number.isFinite(s.drainMultiplier)||s.drainMultiplier<0||s.drainMultiplier>10))errors.push('Multiplicateur de perte invalide.');
-      for(const key of ['energyDelta','healthDelta','resourceReward'])if(s[key]!==undefined&&!Number.isFinite(s[key]))errors.push('Événement de segment invalide : '+key);}
+      for(const key of ['energyDelta','healthDelta','resourceReward'])if(s[key]!==undefined&&!Number.isFinite(s[key]))errors.push('Événement de segment invalide : '+key);
+      if(s.probabilistic){
+        const p=s.probabilistic;
+        for(const key of ['occurrenceChance','durationVariance','detourChance','weatherChance','nightChance','caveChance','injuryChance','resourceVariance','safeChance'])if(p[key]!==undefined&&(!Number.isFinite(p[key])||p[key]<0||p[key]>1))errors.push('Probabilité de segment invalide : '+key);
+        if(p.injuryDamage!==undefined&&(!Number.isFinite(p.injuryDamage)||p.injuryDamage<0||p.injuryDamage>1000))errors.push('Dégâts de blessure invalides.');
+      }}
     if(total>3600)errors.push('Démonstration limitée à 60 minutes.');
     for(const [k,min,max] of [['initialPercent',0,100],['health',1,1000],['fuel',0,1000],['rateScale',0,10],['baseMaxEnergy',1,10000],['basePassiveDrainPercent',0,10000],['starvationDamage',0,1000],['safeZoneRegenRate',0,10000],['agonyDuration',0,3600],['fuelSecondsPerUnit',.1,3600]])if(!Number.isFinite(c[k])||c[k]<min||c[k]>max)errors.push('Paramètre invalide : '+k);
     if(!['base','max'].includes(c.drainBasis)||!['famine','instant'].includes(c.death)||!['auto','manual'].includes(c.policy))errors.push('Profil inconnu.');

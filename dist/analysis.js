@@ -50,21 +50,35 @@ const CliffAnalysis = (() => {
   }
   function mulberry32(seed){return function(){let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;}}
   function percentile(values,p){const s=[...values].sort((a,b)=>a-b);return s[Math.min(s.length-1,Math.max(0,Math.floor((s.length-1)*p)))];}
-  function poisson(lambda,rng){let l=Math.exp(-lambda),p=1,k=0;do{k++;p*=rng();}while(p>l&&k<30);return k-1;}
   function runMonteCarlo(config,defs,options={}){
-    const o={iterations:500,seed:42,biome:'altanis',poiCount:3,distanceMin:400,distanceMax:800,speed:8,detourChance:.35,injuryChance:.12,nightChance:.15,safePoiChance:.18,...options};const biome=biomes.find(b=>b.id===o.biome)||biomes[0],rng=mulberry32(Number(o.seed)||42),runs=[];
+    const o={iterations:500,seed:42,...options},rng=mulberry32(Number(o.seed)||42),runs=[];
     for(let i=0;i<o.iterations;i++){
-      const c=clone(config),segments=[];let resources=0,injuries=0,combats=0,distance=0;
-      for(let p=0;p<o.poiCount;p++){
-        const d=o.distanceMin+rng()*(o.distanceMax-o.distanceMin);distance+=d;const detour=rng()<o.detourChance;const climb=rng()<biome.climb;let duration=d/o.speed*(detour?1.15+rng()*.35:1)+(climb?18+rng()*45:0);const rainy=rng()<biome.weather,night=rng()<o.nightChance,cave=rng()<biome.cave;segments.push({name:`Trajet ${p+1}`,duration:Math.max(5,duration),environment:cave?'cave':rainy?'rain':night?'night':'sun',movement:climb?'climb':rng()<.55?'sprint':'run',wind:!cave&&rng()>.25});
-        const n=poisson(.28+biome.level*.2,rng);combats+=n;if(n)segments.push({name:`Combat ${p+1}`,duration:12+n*(10+rng()*18),environment:cave?'cave':night?'night':'shade',movement:'run',wind:false});
-        if(rng()<o.injuryChance*biome.level/2)injuries++;
-        resources+=(6+rng()*8)*(1+(biome.level-1)*.28)*(0.75+rng()*.55);
-        if(rng()<o.safePoiChance)segments.push({name:'Moulin · zone sûre',duration:8+rng()*10,environment:'safe',movement:'idle',wind:true});
+      const c=clone(config),segments=[];let injuries=0,combats=0,detours=0,weatherChanges=0,skipped=0;
+      for(const original of config.scenario){
+        const segment=clone(original),p=segment.probabilistic||{};
+        if(!p.enabled){segments.push(segment);if(segment.activity==='combat')combats++;continue;}
+        if(rng()>(p.occurrenceChance??1)){skipped++;continue;}
+        const biome=biomes.find(item=>item.id===(p.biome||'altanis'))||biomes[0];
+        const variance=p.durationVariance??0;segment.duration=Math.max(1,segment.duration*(1+(rng()*2-1)*variance));
+        if(rng()<(p.detourChance??0)){segment.duration*=1.1+rng()*.4;detours++;}
+        const before=segment.environment;
+        const caveChance=Math.min(1,(p.caveChance??0)+biome.cave*.5),weatherChance=Math.min(1,(p.weatherChance??.1)*(0.75+biome.level*.12)+biome.weather*.25);
+        if(rng()<(p.safeChance??0))segment.environment='safe';
+        else if(rng()<caveChance)segment.environment='cave';
+        else if(rng()<weatherChance)segment.environment='rain';
+        else if(rng()<(p.nightChance??0))segment.environment='night';
+        if(segment.environment!==before)weatherChanges++;
+        if(rng()<Math.min(1,(p.injuryChance??0)*Math.max(1,biome.level/2))){segment.healthDelta=(segment.healthDelta||0)-(p.injuryDamage??5);injuries++;}
+        const resourceVariance=p.resourceVariance??0;segment.resourceReward=Math.max(0,(segment.resourceReward||0)*(1+(rng()*2-1)*resourceVariance));
+        if(segment.activity==='combat')combats++;
+        segments.push(segment);
       }
-      c.scenario=segments;c.health=Math.max(1,c.health-injuries*(2+biome.level));c.actions=[];const r=CliffEngine.simulate(c,defs);runs.push({viable:r.returnPossible,energy:r.final.E,duration:r.total,resources,injuries,combats,distance,death:r.deathAt!==null});
+      if(!segments.length)segments.push({...clone(config.scenario[0]),duration:1,resourceReward:0});
+      segments.forEach(segment=>segment.duration=Math.min(1200,Math.max(1,segment.duration)));
+      const generatedTotal=segments.reduce((sum,segment)=>sum+segment.duration,0);if(generatedTotal>3600)segments.forEach(segment=>segment.duration*=3600/generatedTotal);
+      c.scenario=segments;c.actions=[];const r=CliffEngine.simulate(c,defs);runs.push({viable:r.returnPossible,energy:r.final.E,duration:r.total,resources:r.resources,injuries,combats,detours,weatherChanges,skipped,death:r.deathAt!==null});
     }
-    const values=k=>runs.map(r=>r[k]),avg=k=>values(k).reduce((a,b)=>a+b,0)/runs.length;return {options:o,biome,runs,probability:runs.filter(r=>r.viable).length/runs.length,deathProbability:runs.filter(r=>r.death).length/runs.length,energy:{p10:percentile(values('energy'),.1),median:percentile(values('energy'),.5),p90:percentile(values('energy'),.9),mean:avg('energy')},duration:{p10:percentile(values('duration'),.1),median:percentile(values('duration'),.5),p90:percentile(values('duration'),.9)},resources:{p10:percentile(values('resources'),.1),median:percentile(values('resources'),.5),p90:percentile(values('resources'),.9)},averages:{injuries:avg('injuries'),combats:avg('combats'),distance:avg('distance')}};
+    const values=k=>runs.map(r=>r[k]),avg=k=>values(k).reduce((a,b)=>a+b,0)/runs.length;return {options:o,runs,probability:runs.filter(r=>r.viable).length/runs.length,deathProbability:runs.filter(r=>r.death).length/runs.length,energy:{p10:percentile(values('energy'),.1),median:percentile(values('energy'),.5),p90:percentile(values('energy'),.9),mean:avg('energy')},duration:{p10:percentile(values('duration'),.1),median:percentile(values('duration'),.5),p90:percentile(values('duration'),.9)},resources:{p10:percentile(values('resources'),.1),median:percentile(values('resources'),.5),p90:percentile(values('resources'),.9)},averages:{injuries:avg('injuries'),combats:avg('combats'),detours:avg('detours'),weatherChanges:avg('weatherChanges'),skipped:avg('skipped')}};
   }
   return {biomes,utilityWeights,enumerateBuilds,runBatch,runMonteCarlo};
 })();

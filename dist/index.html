@@ -32,7 +32,7 @@
     <main>
       <section id="view-build" class="view active" aria-labelledby="build-title">
         <div class="status-strip">
-          <span class="eyebrow">PROFIL DE DÉMONSTRATION · DEMO-1.3</span>
+          <span class="eyebrow">PROFIL DE DÉMONSTRATION · DEMO-1.4</span>
           <span class="status-chip documented"><i></i>Documenté</span>
           <span class="status-chip assumption"><i></i>Hypothèse</span>
           <span class="status-chip conflict"><i></i>À arbitrer</span>
@@ -72,7 +72,7 @@
           </section>
 
           <aside class="telemetry panel">
-            <div class="panel-heading"><div><span class="kicker">TÉLÉMÉTRIE</span><h2>État du build</h2></div><span id="return-pill" class="result-pill"></span></div>
+            <div class="panel-heading"><div><span class="kicker">TÉLÉMÉTRIE</span><h2>État du build <button type="button" class="param-help" data-help-title="État du build" data-help="Résumé du comportement énergétique du build à l’instant choisi et sur l’ensemble de l’expédition." aria-label="Aide : État du build">?</button></h2></div><span id="return-pill" class="result-pill"></span></div>
             <div class="energy-gauge">
               <svg viewBox="0 0 160 90" role="img" aria-label="Jauge d’énergie">
                 <path class="gauge-track" d="M20 78a60 60 0 0 1 120 0"></path>
@@ -81,13 +81,13 @@
               <div class="gauge-label"><strong id="energy-now">0</strong><span id="energy-cap">/ 100</span><small>à l’instant observé</small></div>
             </div>
             <div class="metric-grid">
-              <div class="metric"><span>Flux net</span><strong id="net-flow">0</strong><small>énergie / s</small></div>
-              <div class="metric"><span>Épuisement</span><strong id="depletion-time">—</strong><small id="depletion-context">sur l’essai</small></div>
-              <div class="metric"><span>Retour</span><strong id="return-energy">0</strong><small>énergie restante</small></div>
-              <div class="metric"><span>Saturation</span><strong id="wasted-energy">0</strong><small>énergie perdue</small></div>
-              <div class="metric"><span>Ressources</span><strong id="scenario-resources">0</strong><small>gagnées par les segments</small></div>
+              <div class="metric"><span>Flux net <button type="button" class="param-help" data-help-title="Flux net" data-help="Variation d’énergie par seconde à l’instant observé : productions et réductions moins consommations et perte passive." aria-label="Aide : Flux net">?</button></span><strong id="net-flow">0</strong><small>énergie / s</small></div>
+              <div class="metric"><span>Épuisement <button type="button" class="param-help" data-help-title="Épuisement" data-help="Premier instant où l’énergie atteint zéro. Un tiret signifie que le build conserve de l’énergie jusqu’à la fin." aria-label="Aide : Épuisement">?</button></span><strong id="depletion-time">—</strong><small id="depletion-context">sur l’essai</small></div>
+              <div class="metric"><span>Retour <button type="button" class="param-help" data-help-title="Énergie au retour" data-help="Énergie restante à la fin du dernier segment. Le retour est viable si le joueur est vivant et conserve au moins un point d’énergie." aria-label="Aide : Énergie au retour">?</button></span><strong id="return-energy">0</strong><small>énergie restante</small></div>
+              <div class="metric"><span>Saturation <button type="button" class="param-help" data-help-title="Saturation" data-help="Énergie produite mais perdue parce que la jauge était déjà pleine. Une valeur élevée peut signaler une production surdimensionnée." aria-label="Aide : Saturation">?</button></span><strong id="wasted-energy">0</strong><small>énergie perdue</small></div>
+              <div class="metric"><span>Ressources <button type="button" class="param-help" data-help-title="Ressources" data-help="Somme des récompenses de ressources définies sur les segments effectivement parcourus." aria-label="Aide : Ressources">?</button></span><strong id="scenario-resources">0</strong><small>gagnées par les segments</small></div>
             </div>
-            <div class="flow-stack"><h3>Flux à cet instant</h3><div id="flow-breakdown"></div></div>
+            <div class="flow-stack"><h3>Flux à cet instant <button type="button" class="param-help" data-help-title="Détail du flux" data-help="Décompose le flux net entre perte naturelle, production, consommation, réduction et recharge de zone sûre." aria-label="Aide : Détail du flux">?</button></h3><div id="flow-breakdown"></div></div>
             <div id="alerts" class="alerts"></div>
           </aside>
         </div>
@@ -126,19 +126,15 @@
             <label>À zéro énergie<select id="death-rule"><option value="famine">Famine TDD</option><option value="instant">Mort immédiate GDD</option></select></label>
             <label>Politique des toggles<select id="toggle-policy"><option value="auto">Automatique selon le contexte</option><option value="manual">États programmés</option></select></label>
           </div><div id="passive-preview" class="parameter-preview"></div><hr><span class="kicker">ACTIONS</span><h2>Programmer à l’instant observé</h2><p class="helper">Placez le curseur temporel dans Équipement, puis ajoutez une activation, un toggle, une fleur ou l’ouverture d’un donjon.</p><div id="action-buttons" class="action-buttons"></div><div id="action-list" class="action-list"></div></section>
-          <section class="panel probabilistic-settings"><span class="kicker">VARIATIONS</span><h2>Expédition probabiliste</h2><p class="helper">Ces paramètres appartiennent au scénario et seront utilisés par la Monte-Carlo de l’onglet Analyse.</p><div class="form-grid">
-            <label>Biome<select id="mc-biome"></select></label><label>Itérations<input id="mc-iterations" type="number" min="50" max="5000" step="50" value="500"></label>
-            <label>Nombre de POI<input id="mc-pois" type="number" min="1" max="12" value="3"></label><label>Graine aléatoire<input id="mc-seed" type="number" value="42"></label>
-            <label>Distance minimale (m)<input id="mc-distance-min" type="number" min="50" max="3000" value="400"></label><label>Distance maximale (m)<input id="mc-distance-max" type="number" min="50" max="5000" value="800"></label>
-            <label>Vitesse de déplacement (m/s)<input id="mc-speed" type="number" min="1" max="30" step="0.5" value="8"></label><label>Chance de détour (%)<input id="mc-detour" type="number" min="0" max="100" value="35"></label>
-            <label>Chance de blessure (%)<input id="mc-injury" type="number" min="0" max="100" value="12"></label><label>Chance de nuit (%)<input id="mc-night" type="number" min="0" max="100" value="15"></label>
-            <label>Chance de moulin (%)<input id="mc-safe" type="number" min="0" max="100" value="18"></label>
+          <section class="panel probabilistic-settings"><span class="kicker">MONTE-CARLO</span><h2>Paramètres de calcul</h2><p class="helper">Les variations de terrain sont définies dans chaque segment. Ces deux valeurs règlent seulement la précision et la reproductibilité du calcul.</p><div class="form-grid">
+            <label>Itérations<input id="mc-iterations" type="number" min="50" max="5000" step="50" value="500"></label>
+            <label>Graine aléatoire<input id="mc-seed" type="number" value="42"></label>
           </div></section></aside>
         </div>
       </section>
 
       <section id="view-catalogue" class="view" aria-labelledby="catalogue-title" hidden>
-        <section class="panel catalogue-panel"><div class="panel-heading"><div><span class="kicker">DONNÉES CONSOLIDÉES</span><h1 id="catalogue-title">Catalogue des modules</h1></div><span class="count-badge">53 entrées</span></div><p class="helper">Sélectionnez un module simulable pour modifier ses paramètres. La simulation est recalculée immédiatement.</p><div class="catalogue-workspace"><div class="catalogue-picker"><input id="catalogue-search" type="search" placeholder="Rechercher par nom, identifiant ou divergence" aria-label="Rechercher dans le catalogue"><div id="catalogue-list" class="catalogue-list"></div></div><aside id="module-editor" class="module-editor" aria-live="polite"></aside></div></section>
+        <section class="panel catalogue-panel"><div class="panel-heading"><div><span class="kicker">DONNÉES CONSOLIDÉES</span><h1 id="catalogue-title">Catalogue des modules</h1></div><span class="count-badge">53 entrées</span></div><p class="helper">Tous les modules peuvent recevoir un prototype de simulation. Les paramètres incomplets restent signalés comme hypothèses jusqu’à leur validation.</p><div class="catalogue-workspace"><div class="catalogue-picker"><input id="catalogue-search" type="search" placeholder="Rechercher par nom, identifiant ou divergence" aria-label="Rechercher dans le catalogue"><div id="catalogue-list" class="catalogue-list"></div></div><aside id="module-editor" class="module-editor" aria-live="polite"></aside></div></section>
       </section>
 
       <section id="view-analysis" class="view" aria-labelledby="analysis-title" hidden>
@@ -157,12 +153,7 @@
       </section>
 
       <section id="view-rules" class="view" aria-labelledby="rules-title" hidden>
-        <section class="panel rules-panel"><span class="kicker">CONTRAT DE SIMULATION</span><h1 id="rules-title">Règles et hypothèses</h1><div class="rule-grid">
-          <article><span class="rule-number">01</span><h2>Énergie</h2><p>Valeurs par défaut : 100 points et 0,3 %/s de perte passive. Production, consommation et réduction restent des leviers distincts.</p></article>
-          <article><span class="rule-number">02</span><h2>Épuisement</h2><p>Le profil TDD applique 1 PV/s à énergie nulle. La variante GDD déclenche la mort immédiate.</p></article>
-          <article><span class="rule-number">03</span><h2>Actions</h2><p>Une action vérifie état vital, présence du module, cooldown et ressources. Un refus ne dépense rien.</p></article>
-          <article><span class="rule-number">04</span><h2>Hypothèses</h2><p>Deux Top, deux Side et deux Down. Les flux Excel sont interprétés en points/s uniquement dans ce prototype.</p></article>
-        </div><div class="rules-columns"><div><h2>Documenté</h2><ul><li>Capacité de base : 100.</li><li>PV de base : 25.</li><li>Famine : −1 PV/s.</li><li>Agonie : 300 secondes.</li><li>Zone sûre : +20 énergie/s.</li><li>Fleur : +20, recharge 180 s.</li><li>Donjon P1 : −30 énergie.</li></ul></div><div><h2>À arbitrer</h2><ul><li>Assiette de la perte passive.</li><li>Gain ou réduction pour les chargeurs.</li><li>Slots GDD, TDD ou Excel.</li><li>Effets alimentés à énergie nulle.</li><li>Cumul des auras et doublons.</li><li>Priorité des événements simultanés.</li></ul></div></div></section>
+        <section class="panel rules-panel"><div id="rules-editor"></div></section>
       </section>
     </main>
   </div>
