@@ -6,7 +6,7 @@
   <title>CliffDivers Balance Lab</title>
   <meta name="description" content="Prototype interactif d’équilibrage des modules, de l’énergie et des expéditions de CliffDivers.">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect rx='16' width='64' height='64' fill='%23131d1e'/%3E%3Cpath d='M16 18h32v30H16z' fill='%236d412d' stroke='%23d9883d' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='10' fill='%2345e0e8' stroke='%23d9883d' stroke-width='4'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./styles.css?v=1.4">
+  <link rel="stylesheet" href="./styles.css?v=1.6">
 </head>
 <body>
   <div class="app-shell">
@@ -19,7 +19,6 @@
         <button class="tab active" data-view="build">Équipement</button>
         <button class="tab" data-view="scenario">Scénario</button>
         <button class="tab" data-view="catalogue">Catalogue</button>
-        <button class="tab" data-view="analysis">Analyse</button>
         <button class="tab" data-view="profiles">Profils</button>
         <button class="tab" data-view="rules">Règles</button>
       </nav>
@@ -29,10 +28,26 @@
       </div>
     </header>
 
+    <nav class="workflow-bar" aria-label="Parcours conseillé">
+      <span class="workflow-label">PARCOURS</span>
+      <button data-go-view="scenario"><b>1</b><span>Définir le scénario</span></button>
+      <i aria-hidden="true">›</i>
+      <button data-go-view="build"><b>2</b><span>Composer le sac</span></button>
+      <i aria-hidden="true">›</i>
+      <button data-go-view="build" data-scroll-results="true"><b>3</b><span>Lire et comparer</span></button>
+      <i aria-hidden="true">›</i>
+      <button data-go-view="profiles"><b>4</b><span>Enregistrer</span></button>
+      <span id="session-summary" class="session-summary" aria-live="polite"></span>
+    </nav>
+
     <main>
       <section id="view-build" class="view active" aria-labelledby="build-title">
+        <section id="welcome-guide" class="welcome-guide" aria-labelledby="welcome-title">
+          <div><span class="kicker">PRISE EN MAIN · 2 MINUTES</span><h2 id="welcome-title">Testez un compromis entre puissance et autonomie</h2><p>Choisissez un scénario, branchez les modules, puis consultez les résultats juste sous le sac. L’exemple commenté prépare une expédition avec obscurité et combat.</p></div>
+          <div class="welcome-actions"><button id="load-guided-example" class="primary">Charger l’exemple commenté</button><button id="dismiss-guide" class="ghost">Masquer</button></div>
+        </section>
         <div class="status-strip">
-          <span class="eyebrow">PROFIL DE DÉMONSTRATION · DEMO-1.4</span>
+          <span class="eyebrow">PROFIL DE DÉMONSTRATION · DEMO-1.6</span>
           <span class="status-chip documented"><i></i>Documenté</span>
           <span class="status-chip assumption"><i></i>Hypothèse</span>
           <span class="status-chip conflict"><i></i>À arbitrer</span>
@@ -62,7 +77,11 @@
               <div><span class="kicker">COMPOSITION ACTIVE</span><h2>Votre sac</h2></div>
               <span id="slot-count" class="count-badge"></span>
             </div>
-            <p class="helper">Glissez les modules sur les connecteurs. La forme et la couleur donnent leur rôle au premier regard.</p>
+            <p class="helper">Glissez les modules sur les connecteurs. Un même module peut occuper plusieurs emplacements compatibles.</p>
+            <div class="bag-toolbar">
+              <label>Modèle de sac<select id="bag-preset" aria-label="Choisir un modèle de sac"></select></label>
+              <details class="bag-creator"><summary>Créer un sac</summary><div class="bag-create-form"><label>Nom<input id="bag-name" type="text" placeholder="Ex. Sac d’assaut"></label><label>Top<input id="bag-top" type="number" min="0" max="4" value="2"></label><label>Side<input id="bag-side" type="number" min="0" max="4" value="2"></label><label>Down<input id="bag-down" type="number" min="0" max="4" value="2"></label><button id="create-bag" class="secondary">Créer et équiper</button></div></details>
+            </div>
             <div id="bag-stage" class="bag-stage" aria-label="Sac à dos et emplacements de modules">
               <div class="bag-halo" aria-hidden="true"></div>
               <img src="./assets/backpack.webp" class="backpack" alt="Sac à dos CliffDivers avec noyau d’énergie cyan">
@@ -92,20 +111,6 @@
           </aside>
         </div>
 
-        <section class="analysis-panel panel">
-          <div class="analysis-heading">
-            <div><span class="kicker">EXPÉDITION</span><h2>Profil énergétique</h2></div>
-            <div class="chart-legend"><span class="energy-line">Énergie B</span><span class="health-line">PV B</span><span id="ref-legend" class="ref-line" hidden>Énergie A</span></div>
-          </div>
-          <div id="segment-strip" class="segment-strip"></div>
-          <svg id="energy-chart" class="energy-chart" viewBox="0 0 1000 240" role="img" aria-label="Courbe d’énergie et de santé pendant l’expédition"></svg>
-          <div class="playback-row">
-            <button id="play" class="primary">Lire</button><button id="restart" class="ghost">Revenir au départ</button>
-            <input id="time-cursor" type="range" min="0" max="165" step="0.1" value="0" aria-label="Temps observé">
-            <output id="time-output">0:00 / 2:45</output>
-          </div>
-          <div id="comparison" class="comparison"></div>
-        </section>
       </section>
 
       <section id="view-scenario" class="view" aria-labelledby="scenario-title" hidden>
@@ -137,9 +142,28 @@
         <section class="panel catalogue-panel"><div class="panel-heading"><div><span class="kicker">DONNÉES CONSOLIDÉES</span><h1 id="catalogue-title">Catalogue des modules</h1></div><span class="count-badge">53 entrées</span></div><p class="helper">Tous les modules peuvent recevoir un prototype de simulation. Les paramètres incomplets restent signalés comme hypothèses jusqu’à leur validation.</p><div class="catalogue-workspace"><div class="catalogue-picker"><input id="catalogue-search" type="search" placeholder="Rechercher par nom, identifiant ou divergence" aria-label="Rechercher dans le catalogue"><div id="catalogue-list" class="catalogue-list"></div></div><aside id="module-editor" class="module-editor" aria-live="polite"></aside></div></section>
       </section>
 
-      <section id="view-analysis" class="view" aria-labelledby="analysis-title" hidden>
+      <section id="build-results" class="embedded-results" aria-labelledby="analysis-title" hidden>
+        <section class="results-intro panel">
+          <div><span class="kicker">DÉCISION</span><h2 id="analysis-title">Résultats et comparaison</h2><p class="helper">Le déterministe explique une expédition précise. La Monte-Carlo mesure sa robustesse. L’analyse en lot compare les compositions selon les mêmes règles d’usage.</p></div>
+          <div id="decision-summary" class="decision-summary"></div>
+        </section>
+        <section class="analysis-panel panel results-chart">
+          <div class="analysis-heading">
+            <div><span class="kicker">SIMULATION DÉTERMINISTE</span><h2>Profil énergétique et effets de gameplay</h2></div>
+            <div class="chart-legend"><span class="energy-line">Énergie B</span><span class="health-line">PV B</span><span id="ref-legend" class="ref-line" hidden>Énergie A</span></div>
+          </div>
+          <div id="deterministic-kpis" class="analysis-kpis"></div>
+          <div id="segment-strip" class="segment-strip"></div>
+          <svg id="energy-chart" class="energy-chart" viewBox="0 0 1000 240" role="img" aria-label="Courbe d’énergie et de santé pendant l’expédition"></svg>
+          <div class="playback-row">
+            <button id="play" class="primary">Lire</button><button id="restart" class="ghost">Revenir au départ</button>
+            <input id="time-cursor" type="range" min="0" max="165" step="0.1" value="0" aria-label="Temps observé">
+            <output id="time-output">0:00 / 2:45</output>
+          </div>
+          <div id="comparison" class="comparison"></div>
+        </section>
         <div class="analysis-workspace">
-          <section class="panel batch-panel"><div class="panel-heading"><div><span class="kicker">MODE LOT</span><h1 id="analysis-title">Analyse automatique des builds</h1></div><button id="run-batch" class="primary">Lancer l’analyse</button></div><p class="helper">Teste toutes les compositions canoniques valides sur les trois scénarios. La puissance est un proxy de prototype explicite.</p><div id="batch-summary" class="analysis-placeholder">Lancez l’analyse pour calculer les dominants, la frontière de Pareto, les taux d’équipement et les seuils de viabilité.</div><div id="batch-results"></div></section>
+          <section class="panel batch-panel"><div class="panel-heading"><div><span class="kicker">MODE LOT</span><h2>Analyse automatique des builds</h2></div><button id="run-batch" class="primary">Lancer l’analyse</button></div><p class="helper">Compare le scénario actif et les trois scénarios de référence. Les actions suivent leur politique d’usage et paient leur coût énergétique.</p><div id="batch-method"></div><div id="batch-summary" class="analysis-placeholder">Lancez l’analyse pour calculer les dominants, la frontière de Pareto, les taux d’équipement et les seuils de viabilité.</div><div id="batch-results"></div></section>
           <section class="panel monte-panel"><div class="panel-heading"><div><span class="kicker">EXPÉDITIONS PROBABILISTES</span><h2>Simulation Monte-Carlo</h2></div><button id="run-monte" class="secondary">Simuler ce scénario</button></div><p class="helper">Utilise le profil probabiliste défini dans l’onglet Scénario.</p><div id="mc-config-summary" class="scenario-summary"></div><div id="monte-results" class="analysis-placeholder">Configurez les variations dans Scénario, puis lancez la simulation.</div><p class="source-line">Sources : <a href="https://docs.google.com/document/d/1T09OWO2hwKh7ca9AUVU0gCJyMXF7NNIrZ4SjGygRXb8/edit?tab=t.uvv10dv1720m" target="_blank" rel="noreferrer">P.O.I.</a> · <a href="https://docs.google.com/document/d/1T09OWO2hwKh7ca9AUVU0gCJyMXF7NNIrZ4SjGygRXb8/edit?tab=t.ytxwm7okn4ku" target="_blank" rel="noreferrer">L.D. Biomes</a></p></section>
         </div>
       </section>
@@ -159,10 +183,9 @@
   </div>
   <div id="module-tooltip" class="module-tooltip" role="tooltip" hidden></div>
   <div id="parameter-tooltip" class="parameter-tooltip" role="tooltip" hidden></div>
-  <script src="./engine.js?v=1.4"></script>
-  <script src="./analysis.js?v=1.4"></script>
-  <script src="./catalogue-data.js?v=1.4"></script>
-  <script src="./app.js?v=1.4"></script>
+  <script src="./engine.js?v=1.6"></script>
+  <script src="./analysis.js?v=1.6"></script>
+  <script src="./catalogue-data.js?v=1.6"></script>
+  <script src="./app.js?v=1.6"></script>
 </body>
 </html>
-
