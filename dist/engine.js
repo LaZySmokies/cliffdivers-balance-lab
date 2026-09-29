@@ -1,0 +1,134 @@
+/* CliffDivers demonstrator engine v1.0. Deterministic; time in seconds, energy in points. */
+const CliffEngine = (() => {
+  const EPS = 1e-8;
+  const clone = x => JSON.parse(JSON.stringify(x));
+  const slotTypes = {T1:'Top',T2:'Top',S1:'Side',S2:'Side',D1:'Down',D2:'Down'};
+  const presets = {
+    mixed:[{name:'Aller · falaise',duration:60,environment:'sun',movement:'sprint',wind:true},{name:'Récolte · grotte',duration:45,environment:'cave',movement:'idle',wind:false},{name:'Retour · falaise',duration:60,environment:'sun',movement:'run',wind:true}],
+    night:[{name:'Aller · nuit',duration:60,environment:'night',movement:'sprint',wind:true},{name:'Récolte · nuit',duration:60,environment:'night',movement:'idle',wind:false},{name:'Retour · nuit',duration:60,environment:'night',movement:'run',wind:true}],
+    rain:[{name:'Aller · pluie',duration:60,environment:'rain',movement:'sprint',wind:true},{name:'Attente · abri',duration:60,environment:'shade',movement:'idle',wind:false},{name:'Retour · pluie',duration:60,environment:'rain',movement:'run',wind:true}]
+  };
+  function defaults(){return {slots:{T1:'solar',T2:'lamp',S1:'dynamo',S2:'standby',D1:'battery',D2:null},on:{lamp:true,burner:true},policy:'auto',death:'famine',drainBasis:'base',initialPercent:100,health:25,fuel:2,rateScale:1,baseMaxEnergy:100,basePassiveDrainPercent:.3,starvationDamage:1,safeZoneRegenRate:20,agonyDuration:300,fuelSecondsPerUnit:30,scenarioName:'Falaise et grotte',scenario:clone(presets.mixed),probabilistic:{biome:'altanis',iterations:500,poiCount:3,seed:42,distanceMin:400,distanceMax:800,speed:8,detourChance:.35,injuryChance:.12,nightChance:.15,safePoiChance:.18},actions:[]};}
+  function validate(c,defs){
+    const errors=[],seen=new Set(),byId=Object.fromEntries(defs.map(m=>[m.id,m]));
+    for(const [slot,id] of Object.entries(c.slots||{})){
+      if(!id)continue;
+      if(!slotTypes[slot]){errors.push('Emplacement inconnu : '+slot);continue;}
+      if(!byId[id]){errors.push('Module inconnu : '+id);continue;}
+      if(!byId[id].slots.includes(slotTypes[slot]))errors.push('Emplacement incompatible : '+id+' / '+slot);
+      if(seen.has(id))errors.push('Doublon interdit dans la démonstration : '+id);seen.add(id);
+    }
+    if(!Array.isArray(c.scenario)||!c.scenario.length)errors.push('Parcours vide.');
+    let total=0;
+    for(const s of c.scenario||[]){if(!Number.isFinite(s.duration)||s.duration<=0||s.duration>1200)errors.push('Durée de segment invalide.');total+=s.duration;
+      if(!['sun','night','rain','cave','shade','safe'].includes(s.environment))errors.push('Environnement invalide.');
+      if(!['idle','run','sprint','slide','climb'].includes(s.movement))errors.push('Mouvement invalide.');
+      if(s.drainMultiplier!==undefined&&(!Number.isFinite(s.drainMultiplier)||s.drainMultiplier<0||s.drainMultiplier>10))errors.push('Multiplicateur de perte invalide.');
+      for(const key of ['energyDelta','healthDelta','resourceReward'])if(s[key]!==undefined&&!Number.isFinite(s[key]))errors.push('Événement de segment invalide : '+key);}
+    if(total>3600)errors.push('Démonstration limitée à 60 minutes.');
+    for(const [k,min,max] of [['initialPercent',0,100],['health',1,1000],['fuel',0,1000],['rateScale',0,10],['baseMaxEnergy',1,10000],['basePassiveDrainPercent',0,10000],['starvationDamage',0,1000],['safeZoneRegenRate',0,10000],['agonyDuration',0,3600],['fuelSecondsPerUnit',.1,3600]])if(!Number.isFinite(c[k])||c[k]<min||c[k]>max)errors.push('Paramètre invalide : '+k);
+    if(!['base','max'].includes(c.drainBasis)||!['famine','instant'].includes(c.death)||!['auto','manual'].includes(c.policy))errors.push('Profil inconnu.');
+    for(const a of c.actions||[])if(!Number.isFinite(a.time)||a.time<0||a.time>total)errors.push('Instant d’action hors parcours.');
+    return errors;
+  }
+  function simulate(input,defs){
+    const c=clone(input),errors=validate(c,defs);if(errors.length)return {errors};
+    const byId=Object.fromEntries(defs.map(m=>[m.id,m]));
+    const equipped=Object.values(c.slots).filter(Boolean).map(id=>byId[id]);
+    const cap=c.baseMaxEnergy+equipped.reduce((v,m)=>v+(m.capacity||0),0);
+    let t=0,E=cap*c.initialPercent/100,HP=c.health,fuel=c.fuel*c.fuelSecondsPerUnit,state='alive';
+    let depletedAt=null,agonyAt=null,deathAt=null,famine=false,nextFamine=Infinity,idleSince=null;
+    const logs=[],samples=[],ledger={},cooldowns={},uses={},on=clone(c.on),actions=(c.actions||[]).map((a,i)=>({...a,index:i})).sort((a,b)=>a.time-b.time||a.index-b.index);
+    const total=c.scenario.reduce((v,s)=>v+s.duration,0);let segIndex=0,segStart=0,segEnd=c.scenario[0].duration,ai=0,wasted=0,unmet=0,minE=E,rejected=0,spentActions=0,receivedActions=0,resources=0;
+    function log(type,message){logs.push({t,type,message});}
+    function record(id,amount){ledger[id]=(ledger[id]||0)+amount;}
+    function check(){
+      E=Math.max(0,Math.min(cap,E));minE=Math.min(minE,E);
+      if(state!=='alive')return;
+      if(E<=EPS&&!famine){E=0;famine=true;nextFamine=t+1;if(depletedAt===null)depletedAt=t;log('danger','Énergie épuisée.');if(c.death==='instant'){state='dead';deathAt=t;log('danger','Mort immédiate : variante GDD.');}}
+      if(famine&&E>=1-EPS){famine=false;nextFamine=Infinity;log('info','Famine arrêtée : énergie ≥ 1.');}
+      if(HP<=EPS&&state==='alive'){HP=0;state=c.agonyDuration===0?'dead':'agony';agonyAt=t;deathAt=c.agonyDuration===0?t:deathAt;nextFamine=Infinity;log('danger',c.agonyDuration===0?'Mort à la fin des PV.':'Agonie : PV épuisés. Modules suspendus dans ce profil.');}
+    }
+    function rates(){
+      const seg=c.scenario[segIndex],parts=[];
+      if(state!=='alive')return {net:0,parts,states:{}};
+      let drain=c.basePassiveDrainPercent/100*(c.drainBasis==='max'?cap:c.baseMaxEnergy)*(seg.drainMultiplier??1),reduction=0;const states={};
+      const idle=seg.movement==='idle'&&idleSince!==null&&t-idleSince>=5-EPS;
+      for(const m of equipped){
+        let active=true,reason='Actif';
+        if(m.mode==='action'){states[m.id]='Action';continue;}
+        if(m.mode==='toggle'){
+          active=on[m.id]!==false;
+          if(c.policy==='auto'&&m.id==='lamp')active=active&&['night','cave'].includes(seg.environment);
+          if(!active)reason='Éteint';
+        }
+        if(active&&m.condition){
+          active={sun:seg.environment==='sun',wind:seg.wind&&!['cave','safe'].includes(seg.environment),moving:['sprint','slide'].includes(seg.movement),idle,fuel:fuel>EPS}[m.condition];
+          if(!active)reason=m.condition==='fuel'?'Sans combustible':'Condition absente';
+        }
+        states[m.id]=active?'Actif':reason;
+        if(active){
+          if(m.production)parts.push({id:m.id,rate:m.production*c.rateScale});
+          if(m.consumption)parts.push({id:m.id,rate:-m.consumption*c.rateScale});
+          if(m.reduction)reduction+=m.reduction*c.rateScale;
+        }
+      }
+      parts.unshift({id:'passive',rate:-drain});
+      if(reduction)parts.push({id:'standby',rate:Math.min(drain,reduction)});
+      if(seg.environment==='safe')parts.push({id:'safe',rate:c.safeZoneRegenRate});
+      return {net:parts.reduce((v,p)=>v+p.rate,0),parts,states};
+    }
+    function sample(){const r=rates();samples.push({t,E,HP,state,net:r.net,parts:r.parts,states:r.states,segment:segIndex,fuel:fuel/c.fuelSecondsPerUnit});}
+    function fail(msg){rejected++;log('refused',msg);}
+    function enterSegment(seg){const energy=seg.energyDelta||0,health=seg.healthDelta||0;resources+=seg.resourceReward||0;if(energy){E+=energy;record('segment:'+segIndex,energy);log('event',(energy>0?'+':'')+energy+' énergie : '+seg.name+'.');}if(health){HP+=health;log(health<0?'danger':'event',(health>0?'+':'')+health+' PV : '+seg.name+'.');}check();}
+    function act(a){
+      if(state!=='alive'){fail('Action refusée : joueur '+(state==='agony'?'en agonie':'mort')+'.');return;}
+      if(a.kind==='toggle'){
+        const m=equipped.find(m=>m.id===a.id&&m.mode==='toggle');
+        if(!m){fail('Bascule refusée : module toggle absent.');return;}
+        on[m.id]=a.on;log('action',m.name+' : '+(a.on?'ON':'OFF'));return;
+      }
+      let cost=0,gain=0,cd=0,name=a.id;
+      if(a.id==='flower'){name='Fleur d’Altanis';gain=20;cd=180;}
+      else if(a.id==='dungeon'){name='Ouverture donjon P1';cost=30;if(uses[a.id]){fail('Donjon déjà ouvert.');return;}}
+      else{
+        const m=equipped.find(m=>m.id===a.id&&m.mode==='action');
+        if(!m){fail('Action refusée : module action absent ('+a.id+').');return;}
+        name=m.name;cost=m.cost;cd=m.cooldown||0;
+        if(m.cooldown===null&&uses[m.id]){fail(name+' : une utilisation par essai (hypothèse).');return;}
+      }
+      if((cooldowns[a.id]||0)>t+EPS){fail(name+' : recharge restante '+Math.ceil(cooldowns[a.id]-t)+' s.');return;}
+      if(E+EPS<cost){fail(name+' : énergie insuffisante ('+E.toFixed(1)+' / '+cost+').');return;}
+      const accepted=Math.min(gain,cap-E);wasted+=gain-accepted;E=E-cost+accepted;spentActions+=cost;receivedActions+=gain;record('action:'+a.id,gain-cost);
+      cooldowns[a.id]=t+cd;uses[a.id]=(uses[a.id]||0)+1;log('action',name+' : '+(gain?'+'+accepted.toFixed(1):'−'+cost)+' énergie.');check();
+    }
+    if(c.scenario[0].movement==='idle')idleSince=0;
+    log('segment',c.scenario[0].name);enterSegment(c.scenario[0]);check();
+    for(let guard=0;t<=total+EPS&&guard<50000;guard++){
+      if(t>=segEnd-EPS&&segIndex<c.scenario.length-1){const previous=c.scenario[segIndex];segStart=segEnd;segIndex++;segEnd+=c.scenario[segIndex].duration;const seg=c.scenario[segIndex];if(seg.movement!=='idle')idleSince=null;else if(previous.movement!=='idle')idleSince=t;log('segment',seg.name);enterSegment(seg);}
+      while(ai<actions.length&&actions[ai].time<=t+EPS)act(actions[ai++]);
+      if(state==='alive'&&famine&&t>=nextFamine-EPS){HP-=c.starvationDamage;nextFamine+=1;check();}
+      if(state==='agony'&&t>=agonyAt+c.agonyDuration-EPS){state='dead';deathAt=t;log('danger','Mort après '+c.agonyDuration+' s d’agonie.');}
+      sample();if(t>=total-EPS)break;
+      const r=rates();let next=Math.min(total,t+1,segEnd,ai<actions.length?actions[ai].time:Infinity,state==='alive'?nextFamine:Infinity,state==='agony'?agonyAt+c.agonyDuration:Infinity);
+      if(state==='alive'){
+        if(idleSince!==null&&idleSince+5>t+EPS)next=Math.min(next,idleSince+5);
+        if(r.net< -EPS&&E>EPS)next=Math.min(next,t+E/-r.net);
+        if(famine&&r.net>EPS&&E<1-EPS)next=Math.min(next,t+(1-E)/r.net);
+        if(r.states.burner==='Actif'&&fuel>EPS)next=Math.min(next,t+fuel);
+      }
+      const dt=next-t;if(dt<=EPS)throw Error('Simulation bloquée à '+t);
+      if(state==='alive'){
+        for(const p of r.parts)record(p.id,p.rate*dt);
+        const raw=E+r.net*dt;wasted+=Math.max(0,raw-cap);unmet+=Math.max(0,-raw);E=Math.max(0,Math.min(cap,raw));
+        if(r.states.burner==='Actif'){fuel=Math.max(0,fuel-dt);if(fuel<=EPS){t=next;log('warning','Combustible épuisé.');}}
+      }
+      t=next;check();sample();
+    }
+    const final=samples[samples.length-1];
+    return {errors:[],samples,logs,total,cap,initialEnergy:cap*c.initialPercent/100,final,ledger,wasted,unmet,minE,depletedAt,agonyAt,deathAt,rejected,spentActions,receivedActions,resources,returnPossible:state==='alive'&&E>=1-EPS,fuelUsed:c.fuel-fuel/c.fuelSecondsPerUnit,profile:'demo-1.3'};
+  }
+  return {defaults,presets,slotTypes,simulate,validate,clone};
+})();
+if(typeof module!=='undefined')module.exports=CliffEngine;
+

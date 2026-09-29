@@ -1,0 +1,2297 @@
+{
+  "schemaVersion": "1.0",
+  "date": "2026-09-29",
+  "scope": "Modules nommés dans les 3 fichiers et le GDD fourni ; stations exclues. Les concepts éventuellement modules sont identifiés.",
+  "sources": [
+    "TD_Modules & Sac à dos.xlsx",
+    "TDD_Survie_&_Gestion.docx",
+    "TDD_3C_&_Metrics.docx",
+    "GDD cité dans la conversation Analyser le système de modules"
+  ],
+  "conventions": {
+    "null": "non renseigné ou non arbitré ; jamais zéro implicite",
+    "normalized": "valeurs non ambiguës extraites, pas contrat complet de simulation",
+    "prototype": "hypothèses distinctes utilisées exclusivement pour la maquette",
+    "crossSourceMapping": "rapprochements proposés, non preuve d’identité"
+  },
+  "modules": [
+    {
+      "id": "wind-wood",
+      "name": "Petite éolienne en bois",
+      "family": "chargeur",
+      "sourceIds": [
+        "WoodenWindTurbine1"
+      ],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Petite éolienne en bois",
+          "raw": "Effet : Réduit la perte d'énergie de ↑ / 1",
+          "activationClass": "chargeur"
+        },
+        {
+          "source": "TD_Modules & Sac à dos.xlsx",
+          "locator": "TD_modules!A14:R14",
+          "fields": {
+            "ID": "WoodenWindTurbine1",
+            "Display Name": "Wooden Wind Turbine",
+            "Display FR": "éolienne en bois",
+            "Biome": "1.0",
+            "Activation": "Passive",
+            "Slot Type": "Top",
+            "Conso / flux": "1"
+          }
+        }
+      ],
+      "normalized": {
+        "activation": "passive",
+        "slots": [
+          "Top"
+        ],
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Unité et période du flux Excel non précisées ; aucune conversion en points/s validée.",
+        "Rapprochement des noms entre sources à confirmer ; variantes conservées.",
+        "TDD : réduction 1 ; Excel : flux +1. Condition de vent évoquée par le GDD ; fonction de rendement absente."
+      ],
+      "prototype": {
+        "status": "hypothèse de démonstration",
+        "slots": [
+          "Top"
+        ],
+        "mode": "passive",
+        "production": 1,
+        "condition": "wind",
+        "note": "Flux en points/s ; vent présent = pleine production."
+      },
+      "status": "à arbitrer",
+      "aliases": [
+        "éolienne en bois"
+      ]
+    },
+    {
+      "id": "burner",
+      "name": "Brûleur en cuivre",
+      "family": "chargeur",
+      "sourceIds": [
+        "CopperBurner1"
+      ],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Brûleur en cuivre",
+          "raw": "Effet : Réduit la perte d'énergie de ↑ ↑ / 2  en échange de ressource",
+          "activationClass": "chargeur"
+        },
+        {
+          "source": "TD_Modules & Sac à dos.xlsx",
+          "locator": "TD_modules!A12:R12",
+          "fields": {
+            "ID": "CopperBurner1",
+            "Display Name": "Copper Burner",
+            "Display FR": "Brûleur en cuivre",
+            "Biome": "1.0",
+            "Activation": "On-Off",
+            "Slot Type": "Top",
+            "Conso / flux": "3.0"
+          }
+        }
+      ],
+      "normalized": {
+        "activation": "toggle",
+        "slots": [
+          "Top"
+        ],
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Unité et période du flux Excel non précisées ; aucune conversion en points/s validée.",
+        "Rapprochement des noms entre sources à confirmer ; variantes conservées.",
+        "GDD cité : Side ; Excel : Top. TDD : réduction 2 ; Excel : flux +3. Combustible et cadence absents."
+      ],
+      "prototype": {
+        "status": "hypothèse de démonstration",
+        "slots": [
+          "Top"
+        ],
+        "mode": "toggle",
+        "production": 3,
+        "condition": "fuel",
+        "note": "Slot Excel ; 1 combustible pour 30 secondes actives, réserve partagée."
+      },
+      "status": "à arbitrer",
+      "aliases": [
+        "Brûleur en cuivre"
+      ]
+    },
+    {
+      "id": "wind-copper",
+      "name": "Petite éolienne en cuivre",
+      "family": "chargeur",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Petite éolienne en cuivre",
+          "raw": "Effet : Réduit la perte d'énergie de ↑↑ / 2",
+          "activationClass": "chargeur"
+        }
+      ],
+      "normalized": {
+        "activation": null,
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées.",
+        "Activation normalisée non arrêtée."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "dynamo",
+      "name": "Dynamo Cinétique",
+      "family": "chargeur",
+      "sourceIds": [
+        "KineticDynamo1"
+      ],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Dynamo Cinétique",
+          "raw": "Effet : Réduit la perte d'énergie de ↑↑ / 2% lorsque le joueur est en train de sprinter ou de glisser.",
+          "activationClass": "chargeur"
+        },
+        {
+          "source": "TD_Modules & Sac à dos.xlsx",
+          "locator": "TD_modules!A9:R9",
+          "fields": {
+            "ID": "KineticDynamo1",
+            "Display Name": "Kinetic Dynamo",
+            "Display FR": "Dynamo Cinétique",
+            "Biome": "1.0",
+            "Activation": "Passive",
+            "Slot Type": "Side / Down",
+            "Conditions / Event": "PlayerVelocity > X",
+            "Conso / flux": "2.0"
+          }
+        }
+      ],
+      "normalized": {
+        "activation": "passive",
+        "slots": [
+          "Side",
+          "Down"
+        ],
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Unité et période du flux Excel non précisées ; aucune conversion en points/s validée.",
+        "Rapprochement des noms entre sources à confirmer ; variantes conservées.",
+        "TDD : sprint/glissade ; Excel : PlayerVelocity > X. Seuil X absent et nature gain/réduction ambiguë."
+      ],
+      "prototype": {
+        "status": "hypothèse de démonstration",
+        "slots": [
+          "Side",
+          "Down"
+        ],
+        "mode": "passive",
+        "production": 2,
+        "condition": "moving",
+        "note": "Déclenchement sprint/glissade ; points/s."
+      },
+      "status": "à arbitrer",
+      "aliases": [
+        "Dynamo Cinétique"
+      ]
+    },
+    {
+      "id": "solar",
+      "name": "Panneau Photovoltaïque de Teya",
+      "family": "chargeur",
+      "sourceIds": [
+        "SolarPanel1"
+      ],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Panneau Photovoltaïque de Teya",
+          "raw": "Effet : Réduitest exposé directement à la lumière du soleil (ne fonctionne pas la nuit, dans le la perte naturelle d'énergie ↑↑ / 2% tant que le joueur s grottes ou sous la pluie).",
+          "activationClass": "chargeur"
+        },
+        {
+          "source": "TD_Modules & Sac à dos.xlsx",
+          "locator": "TD_modules!A13:R13",
+          "fields": {
+            "ID": "SolarPanel1",
+            "Display Name": "Solar Panel",
+            "Display FR": "Panneau Photovoltaïque",
+            "Biome": "1.0",
+            "Activation": "Passive",
+            "Slot Type": "Top",
+            "Conditions / Event": "IsSunlightExposed == true",
+            "Conso / flux": "2.0"
+          }
+        }
+      ],
+      "normalized": {
+        "activation": "passive",
+        "slots": [
+          "Top"
+        ],
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Unité et période du flux Excel non précisées ; aucune conversion en points/s validée.",
+        "Rapprochement des noms entre sources à confirmer ; variantes conservées.",
+        "TDD : réduction 2 % ; Excel : flux +2. Production ou réduction à arbitrer, ainsi que période et assiette."
+      ],
+      "prototype": {
+        "status": "hypothèse de démonstration",
+        "slots": [
+          "Top"
+        ],
+        "mode": "passive",
+        "production": 2,
+        "condition": "sun",
+        "note": "Flux Excel traité en points/s ; soleil direct, pas de pluie."
+      },
+      "status": "à arbitrer",
+      "aliases": [
+        "Panneau Photovoltaïque"
+      ]
+    },
+    {
+      "id": "soul",
+      "name": "Moissonneur d’Âmes",
+      "family": "chargeur",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Moissonneur d’Âmes",
+          "raw": "Effet : Chaque ennemi tué rend instantanément +5 points d'énergie.\nStratégie : Encourage un style de jeu agressif pour survivre loin des Safe Zones.",
+          "activationClass": "chargeur"
+        }
+      ],
+      "normalized": {
+        "activation": null,
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées.",
+        "Activation normalisée non arrêtée."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "group",
+      "name": "Résonateur de Groupe (Coop)",
+      "family": "chargeur",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Résonateur de Groupe (Coop)",
+          "raw": "Effet : Si 2 joueurs ou plus équipés de ce module sont proches (< 10m), leur perte naturelle d'énergie est ralentie collectivement ↑↑ / 2%.",
+          "activationClass": "chargeur"
+        }
+      ],
+      "normalized": {
+        "activation": null,
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées.",
+        "Activation normalisée non arrêtée."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "standby",
+      "name": "Mode Veille (Stationnaire)",
+      "family": "chargeur",
+      "sourceIds": [
+        "StandbyMode1"
+      ],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Mode Veille (Stationnaire)",
+          "raw": "Effet : Si le joueur reste immobile plus de 5 secondes, la perte d'énergie est ralentie (4%).\nUtilité : Parfait pour les joueurs qui gèrent leur inventaire, lisent le lore, ou font du craft sur le terrain loin d'une Safe Zone.",
+          "activationClass": "chargeur"
+        },
+        {
+          "source": "TD_Modules & Sac à dos.xlsx",
+          "locator": "TD_modules!A10:R10",
+          "fields": {
+            "ID": "StandbyMode1",
+            "Display Name": "Standby Mode",
+            "Display FR": "Mode Veille",
+            "Biome": "1.0",
+            "Activation": "Passive",
+            "Slot Type": "Side",
+            "Conditions / Event": "IsPlayerIdle == true",
+            "Conso / flux": "5.0"
+          }
+        }
+      ],
+      "normalized": {
+        "activation": "passive",
+        "slots": [
+          "Side"
+        ],
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Unité et période du flux Excel non précisées ; aucune conversion en points/s validée.",
+        "Rapprochement des noms entre sources à confirmer ; variantes conservées.",
+        "TDD : réduction 4 %, après plus de 5 s immobile ; Excel : +5 si idle. Nature, unité et délai à arbitrer."
+      ],
+      "prototype": {
+        "status": "hypothèse de démonstration",
+        "slots": [
+          "Side"
+        ],
+        "mode": "passive",
+        "reduction": 0.3,
+        "condition": "idle",
+        "note": "Annule au plus 0,3 point/s de perte passive après 5 s ; aucun gain."
+      },
+      "status": "à arbitrer",
+      "aliases": [
+        "Mode Veille"
+      ]
+    },
+    {
+      "id": "air-turbine",
+      "name": "Aéro-Turbine (CliffDivers’ style)",
+      "family": "chargeur",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Aéro-Turbine (CliffDivers’ style)",
+          "raw": "Effet : La perte d'énergie s'arrête et se convertit en gain (↑↑ / 2%) lorsque le joueur est en chute libre depuis plus de X secondes.\nGameplay : Incite les joueurs à sauter des falaises sans planeur et à l'activer au tout dernier moment.",
+          "activationClass": "chargeur"
+        }
+      ],
+      "normalized": {
+        "activation": null,
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées.",
+        "Activation normalisée non arrêtée."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "impact",
+      "name": "Condensateur de Coups",
+      "family": "chargeur",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Condensateur de Coups",
+          "raw": "Effet : Chaque fois que le joueur subit plus de X points de dégâts en un coup, il récupère +3 points d'énergie.\nRisque : Dangereux, mais utile pour les \"Tanks\" qui encaissent beaucoup.",
+          "activationClass": "chargeur"
+        }
+      ],
+      "normalized": {
+        "activation": null,
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées.",
+        "Activation normalisée non arrêtée."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "ice-axe",
+      "name": "Piolet-Python (Escalade)",
+      "family": "chargeur",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Piolet-Python (Escalade)",
+          "raw": "Effet : Lorsque le joueur est accroché à une paroi sans bouger (pause en pleine escalade), la perte d'énergie est ralentie (4%).\nUtilité : Permet de planifier son itinéraire au milieu d'une ascension vertigineuse sans stresser sur le timer.",
+          "activationClass": "chargeur"
+        }
+      ],
+      "normalized": {
+        "activation": null,
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées.",
+        "Activation normalisée non arrêtée."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "catalyst",
+      "name": "Filtre à Catalyse",
+      "family": "chargeur",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Filtre à Catalyse",
+          "raw": "Effet : un gain d'énergie lorsque le joueur se trouve à l'intérieur d'un nuage de gaz toxique ou de spores.(↑↑ / 2%)\nContrainte : Le joueur subit toujours les dégâts de poison sur sa barre de vie (ou nécessite un masque à gaz pour en profiter pleinement).",
+          "activationClass": "chargeur"
+        }
+      ],
+      "normalized": {
+        "activation": null,
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées.",
+        "Activation normalisée non arrêtée."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "necrosis",
+      "name": "Récupérateur de Nécrose",
+      "family": "chargeur",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Récupérateur de Nécrose",
+          "raw": "Effet : Chaque fois que le joueur inflige des dégâts de poison à un ennemi, il récupère 1 point d'énergie.\nSynergie : Très puissant avec des armes qui infligent des DOT (Damage Over Time).",
+          "activationClass": "chargeur"
+        }
+      ],
+      "normalized": {
+        "activation": null,
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées.",
+        "Activation normalisée non arrêtée."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "exo",
+      "name": "Exosquelette Minimal",
+      "family": "continu",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Exosquelette Minimal",
+          "raw": "Effet : Augmente la vitesse de déplacement de 15% et la hauteur de saut.\nCoût : Augmente la perte naturelle.",
+          "activationClass": "continu"
+        }
+      ],
+      "normalized": {
+        "activation": "continuous",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "damage",
+      "name": "Diffuseur dégât",
+      "family": "continu",
+      "sourceIds": [
+        "DamageDiffuser1"
+      ],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Diffuseur dégât",
+          "raw": "Effet : Le joueur fait 10 de dégâts supplémentaire par coup et + 5 pour les autres joueurs dans un rayon de 20 m\nFlux : Consommation ↓ / 1%. ",
+          "activationClass": "continu"
+        },
+        {
+          "source": "TD_Modules & Sac à dos.xlsx",
+          "locator": "TD_modules!A6:R6",
+          "fields": {
+            "ID": "DamageDiffuser1",
+            "Display Name": "Damage Diffuser",
+            "Display FR": "Diffuseur dégât",
+            "Biome": "1.0",
+            "Activation": "Passive",
+            "Slot Type": "Side",
+            "Conso / flux": "-2.0"
+          }
+        }
+      ],
+      "normalized": {
+        "activation": "passive",
+        "slots": [
+          "Side"
+        ],
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Unité et période du flux Excel non précisées ; aucune conversion en points/s validée.",
+        "Rapprochement des noms entre sources à confirmer ; variantes conservées."
+      ],
+      "prototype": {
+        "status": "hypothèse de démonstration",
+        "slots": [
+          "Side"
+        ],
+        "mode": "continuous",
+        "consumption": 2,
+        "note": "Flux Excel en points/s ; combat hors simulation."
+      },
+      "status": "à arbitrer",
+      "aliases": [
+        "Diffuseur dégât"
+      ]
+    },
+    {
+      "id": "armor",
+      "name": "Diffuseur armure",
+      "family": "continu",
+      "sourceIds": [
+        "ArmorDiffuser1"
+      ],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Diffuseur armure",
+          "raw": "Effet :Le joueur gagne 10 d’armure et + 5 pour les autres joueurs dans un rayon de 20 m\nFlux : Consommation ↓ / 1%. Le joueur devient une usine ambulante mais doit rentrer vite.",
+          "activationClass": "continu"
+        },
+        {
+          "source": "TD_Modules & Sac à dos.xlsx",
+          "locator": "TD_modules!A5:R5",
+          "fields": {
+            "ID": "ArmorDiffuser1",
+            "Display Name": "Armor Diffuser",
+            "Display FR": "Diffuseur armure",
+            "Biome": "1.0",
+            "Activation": "Passive",
+            "Slot Type": "Side",
+            "Target Type": "Self + Allies in range",
+            "Range": "20 meters",
+            "Conso / flux": "-2.0"
+          }
+        }
+      ],
+      "normalized": {
+        "activation": "passive",
+        "slots": [
+          "Side"
+        ],
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": 20.0
+      },
+      "issues": [
+        "Unité et période du flux Excel non précisées ; aucune conversion en points/s validée.",
+        "Rapprochement des noms entre sources à confirmer ; variantes conservées."
+      ],
+      "prototype": {
+        "status": "hypothèse de démonstration",
+        "slots": [
+          "Side"
+        ],
+        "mode": "continuous",
+        "consumption": 2,
+        "note": "Flux Excel en points/s ; effet armure hors simulation."
+      },
+      "status": "à arbitrer",
+      "aliases": [
+        "Diffuseur armure"
+      ]
+    },
+    {
+      "id": "refinery",
+      "name": "Raffinerie de Poche",
+      "family": "continu",
+      "sourceIds": [
+        "PocketRefinery1"
+      ],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Raffinerie de Poche",
+          "raw": "Effet : Le joueur a une chance (30%) de doubler les ressources récoltées (minerais, bois).\nFlux : Consommation ↓↓ / 2%. Le joueur devient une usine ambulante mais doit rentrer vite.",
+          "activationClass": "continu"
+        },
+        {
+          "source": "TD_Modules & Sac à dos.xlsx",
+          "locator": "TD_modules!A7:R7",
+          "fields": {
+            "ID": "PocketRefinery1",
+            "Display Name": "Pocket Refinery",
+            "Display FR": "Raffinerie de Poche",
+            "Biome": "1.0",
+            "Activation": "One-Shot",
+            "Slot Type": "Side",
+            "Target Type": "Loot Items",
+            "Duration": "5 min",
+            "Conso / flux": "0.0"
+          }
+        }
+      ],
+      "normalized": {
+        "activation": "continuous",
+        "slots": [
+          "Side"
+        ],
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Rapprochement des noms entre sources à confirmer ; variantes conservées.",
+        "TDD : permanent, 30 % de double récolte, 2 % ; Excel : One-Shot, durée 5 min, flux 0 et coût ponctuel vide."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": [
+        "Raffinerie de Poche"
+      ]
+    },
+    {
+      "id": "coil",
+      "name": "Bobine Défensive (Épines)",
+      "family": "continu",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Bobine Défensive (Épines)",
+          "raw": "Effet : Tout ennemi qui frappe le joueur au corps-à-corps subit automatiquement 5 points de dégâts électriques et est brièvement ralenti.\nFlux : Consommation ↓ / 1%\nCooldown : ?",
+          "activationClass": "continu"
+        }
+      ],
+      "normalized": {
+        "activation": "continuous",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Cooldown explicitement noté « ? ».",
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "berserk",
+      "name": "Injecteur de Stimulants (Berserker)",
+      "family": "continu",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Injecteur de Stimulants (Berserker)",
+          "raw": "Effet : Plus la barre de vie du joueur est basse, plus ses dégâts augmentent (jusqu'à +50% de dégâts si PV < 20%).\nFlux : Consommation ↓↓ / 2%. Un module pour ceux qui aiment jouer avec la mort.",
+          "activationClass": "continu"
+        }
+      ],
+      "normalized": {
+        "activation": "continuous",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "symbiote",
+      "name": "Symbiote de Corruption",
+      "family": "continu",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Symbiote de Corruption",
+          "raw": "Effet : Tant que le joueur souffre du statut \"Empoisonné\" ou \"Corruption\", ses dégâts de mêlée sont augmentés de +10%.\nFlux : Consommation faible ↓ / 1%",
+          "activationClass": "continu"
+        }
+      ],
+      "normalized": {
+        "activation": "continuous",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "pestilence",
+      "name": "Aura de Pestilence",
+      "family": "continu",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Aura de Pestilence",
+          "raw": "Effet : Le joueur émet en permanence une faible radiation. Les ennemis autour de vous prennent de légers dégâts toutes les secondes. Les petits ennemis (faune, vermine) fuient à votre approche au lieu d'attaquer.\nFlux : Consommation élevée ↓↓ / 2%",
+          "activationClass": "continu"
+        }
+      ],
+      "normalized": {
+        "activation": "continuous",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "lamp",
+      "name": "Lampe en cuivre",
+      "family": "toggle",
+      "sourceIds": [
+        "SmallCopperLamp1"
+      ],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Lampe en cuivre",
+          "raw": "Effet (ON) : s’allume et s'éteint\nCoût : Consommation ↓ / 1% quand actif ",
+          "activationClass": "toggle"
+        },
+        {
+          "source": "TD_Modules & Sac à dos.xlsx",
+          "locator": "TD_modules!A11:R11",
+          "fields": {
+            "ID": "SmallCopperLamp1",
+            "Display Name": "Small Copper Lamp",
+            "Display FR": "Petite Lampe en cuivre",
+            "Biome": "1.0",
+            "Activation": "On-Off",
+            "Slot Type": "Top",
+            "Conso / flux": "-2.0"
+          }
+        }
+      ],
+      "normalized": {
+        "activation": "toggle",
+        "slots": [
+          "Top"
+        ],
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Unité et période du flux Excel non précisées ; aucune conversion en points/s validée.",
+        "Rapprochement des noms entre sources à confirmer ; variantes conservées."
+      ],
+      "prototype": {
+        "status": "hypothèse de démonstration",
+        "slots": [
+          "Top"
+        ],
+        "mode": "toggle",
+        "consumption": 2,
+        "note": "Flux Excel en points/s ; auto uniquement en obscurité."
+      },
+      "status": "à arbitrer",
+      "aliases": [
+        "Petite Lampe en cuivre"
+      ]
+    },
+    {
+      "id": "shield",
+      "name": "Champ de Force Personnel",
+      "family": "toggle",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Champ de Force Personnel",
+          "raw": "Effet (ON) : Tout dégât reçu est déduit de la barre d'énergie au lieu de la barre de vie (Ratio : 1 dégât = 1 énergie).\nCoût : Consommation ↓↓ / 2% quand actif + perte d'énergie à l'impact.",
+          "activationClass": "toggle"
+        }
+      ],
+      "normalized": {
+        "activation": "toggle",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Entretien 2 % + impacts à 1:1 ; traitement du reliquat quand énergie insuffisante à définir.",
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "magnet",
+      "name": "Aimant à butin",
+      "family": "toggle",
+      "sourceIds": [
+        "LootMagnet1"
+      ],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Aimant à butin",
+          "raw": "Effet (ON) : Attire automatiquement les ressources et loots au sol dans un rayon de 15m vers le joueur.\nCoût : Consommation ↓ / 1%",
+          "activationClass": "toggle"
+        },
+        {
+          "source": "TD_Modules & Sac à dos.xlsx",
+          "locator": "TD_modules!A4:R4",
+          "fields": {
+            "ID": "LootMagnet1",
+            "Display Name": "Loot Magnet",
+            "Display FR": "Aimant à butin",
+            "Biome": "1.0",
+            "Activation": "Passive",
+            "Slot Type": "Side / Down",
+            "Target Type": "Loot Items",
+            "Range": "10 meters",
+            "Cycle": "0,1 sec",
+            "Conso / flux": "0.0"
+          }
+        }
+      ],
+      "normalized": {
+        "activation": "toggle",
+        "slots": [
+          "Side",
+          "Down"
+        ],
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Rapprochement des noms entre sources à confirmer ; variantes conservées.",
+        "TDD : toggle, 15 m, 1 % ; Excel : passif, 10 m, flux 0. Activation, portée et coût incompatibles."
+      ],
+      "prototype": {
+        "status": "hypothèse de démonstration",
+        "slots": [
+          "Side",
+          "Down"
+        ],
+        "mode": "passive",
+        "consumption": 0,
+        "note": "Variante Excel gratuite, 10 m ; effet de récolte hors simulation."
+      },
+      "status": "à arbitrer",
+      "aliases": [
+        "Aimant à butin"
+      ]
+    },
+    {
+      "id": "smoke",
+      "name": "Échappement de Gaz (Smokescreen)",
+      "family": "toggle",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Échappement de Gaz (Smokescreen)",
+          "raw": "Effet (ON) : Le joueur relâche derrière lui une traînée de gaz toxique opaque. Inflige des dégâts aux ennemis qui vous poursuivent et bloque leur ligne de vue.\nFlux : Consommation très élevée ↓↓↓ / 3%.",
+          "activationClass": "toggle"
+        }
+      ],
+      "normalized": {
+        "activation": "toggle",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "inversion",
+      "name": "Inversion Sanguine",
+      "family": "toggle",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Inversion Sanguine",
+          "raw": "Effet (ON) : Les soins reçus (potions et autres) sont inefficaces, MAIS les dégâts de poison soignent le joueur (convertit les dégâts DOT en HOT - Heal Over Time).\nFlux : Consommation ↓↓↓ / 3%\nUsage : Activation d'urgence pour se soigner en pleine zone mortelle sans utiliser de consommables.",
+          "activationClass": "toggle"
+        }
+      ],
+      "normalized": {
+        "activation": "toggle",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "defib-ally",
+      "name": "Défibrillateur de secours pote",
+      "family": "action",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Défibrillateur de secours pote",
+          "raw": "",
+          "activationClass": "action"
+        }
+      ],
+      "normalized": {
+        "activation": "action",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Nom seul : ne pas confondre avec le Défibrillateur personnel du TDD 3C.",
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "channel",
+      "name": "Canalisateur d’énergie",
+      "family": "action",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Canalisateur d’énergie",
+          "raw": "",
+          "activationClass": "action"
+        }
+      ],
+      "normalized": {
+        "activation": "action",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Nom seul, mécanique non spécifiée.",
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "injector",
+      "name": "Injecteur d’énergie",
+      "family": "action",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Injecteur d’énergie",
+          "raw": "Effet : transforme 20pv en 20 d’énergie jusqu'à une limite de 1 pv max\nCoût : - 20 pv +10 Énergie.\nCooldown : 2 min",
+          "activationClass": "action"
+        }
+      ],
+      "normalized": {
+        "activation": "action",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": 20,
+        "energyGain": null,
+        "cooldownSeconds": 120,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Contradiction interne : description 20 PV vers 20 énergie, coût 20 PV vers 10 énergie ; plancher 1 PV à préciser.",
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "shock",
+      "name": "Impulsion de Choc (AoE)",
+      "family": "action",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Impulsion de Choc (AoE)",
+          "raw": "Effet : Libère une onde de choc qui repousse tous les ennemis proches de 5 mètres (Knockback).\nCoût : -10 Énergie.\nUtilité : Outil de survie critique quand on est encerclé (\"Panic button\").\nCooldown : 10 s",
+          "activationClass": "action"
+        }
+      ],
+      "normalized": {
+        "activation": "action",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": 10,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": 10,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": {
+        "status": "hypothèse de démonstration",
+        "slots": [
+          "Side"
+        ],
+        "mode": "action",
+        "cost": 10,
+        "cooldown": 10,
+        "note": "Coût et recharge TDD ; slot Side hypothétique ; recul non simulé."
+      },
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "transfer",
+      "name": "Balise de Transfert | lien Coffre Transfert",
+      "family": "action",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Balise de Transfert | lien Coffre Transfert",
+          "raw": "Effet : Téléporte instantanément tout le contenu de votre sac à dos (ressources uniquement) vers le coffre de votre base.\nCoût : -80 Énergie.\nRisque : Coût énorme. Le joueur sécurise son loot, mais se retrouve avec très peu d'énergie pour rentrer lui-même",
+          "activationClass": "action"
+        }
+      ],
+      "normalized": {
+        "activation": "action",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": 80,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": {
+        "status": "hypothèse de démonstration",
+        "slots": [
+          "Side"
+        ],
+        "mode": "action",
+        "cost": 80,
+        "cooldown": null,
+        "note": "Coût TDD ; slot Side hypothétique ; une utilisation par essai, faute de cooldown."
+      },
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "teleport",
+      "name": "Propulseur (TP)",
+      "family": "action",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Propulseur (TP)",
+          "raw": "Effet : Téléporte le joueur 5 mètres en avant instantanément (passe à travers les ennemis, mais pas les murs).\nCoût : -10 Énergie par saut.\nCombat : Permet d'esquiver une attaque.\nCooldown : 5 s",
+          "activationClass": "action"
+        }
+      ],
+      "normalized": {
+        "activation": "action",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": 10,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": 5,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "distress",
+      "name": "Balise de Détresse (arc raiders)",
+      "family": "action",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Balise de Détresse (arc raiders)",
+          "raw": "Effet : Tire une fusée éclairante très haut dans le ciel, visible de très loin par les autres joueurs lorsque le joueur tombe en agonie. Marque votre position pendant 1 minute.\nCoût : -5 Énergie.",
+          "activationClass": "action"
+        }
+      ],
+      "normalized": {
+        "activation": "action",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": 5,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": 60,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Déclenchement en agonie à concilier avec interdiction générale de compétences en agonie.",
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "balloon",
+      "name": "Ballon d’urgence",
+      "family": "action",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Ballon d’urgence",
+          "raw": "Effet : s'active automatiquement ou manuellement juste avant de toucher le sol après une chute mortelle, annulant tous les dégâts de chute.\nCoût : -20 Énergie + utilisation unique (ou limitée ?)\nNote : C'est une assurance-vie pour les explorateurs maladroits.",
+          "activationClass": "action"
+        }
+      ],
+      "normalized": {
+        "activation": "action",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": 20,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Nombre de charges et délai non fixés ; automaticité exacte à préciser.",
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "clear",
+      "name": "Condensateur Atmosphérique (Clear)",
+      "family": "action",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Condensateur Atmosphérique (Clear)",
+          "raw": "Effet : Aspire instantanément tout le gaz toxique ou la fumée dans un rayon de 15m. La zone devient \"propre\" pendant 20 secondes.\nCoût : -15 Énergie.\nCoop : Permet à l'équipe de traverser un couloir piégé sans subir de dégâts.",
+          "activationClass": "action"
+        }
+      ],
+      "normalized": {
+        "activation": "action",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": 15,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": 20,
+        "rangeMeters": 15
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "transfusion",
+      "name": "Transfusion d'Urgence",
+      "family": "action",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Transfusion d'Urgence",
+          "raw": "Effet : Retire instantanément 20 points de Vie (PV) au joueur pour recharger +40 points d'Énergie.\nCoût : Vie (pas d'énergie).",
+          "activationClass": "action"
+        }
+      ],
+      "normalized": {
+        "activation": "action",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": 20,
+        "energyGain": 40,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Conversion 20 PV vers 40 énergie ; cooldown, plancher de PV et slot absents.",
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "safe",
+      "name": "Coffre-fort",
+      "family": "neutre",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Coffre-fort",
+          "raw": "Effet : Offre 3 slots d'inventaire \"sécurisés\". Les objets placés dans ces slots ne sont pas perdus / dropés à la mort du joueur.",
+          "activationClass": "neutre"
+        }
+      ],
+      "normalized": {
+        "activation": "passive",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "tools",
+      "name": "Porte-Outils Universel",
+      "family": "neutre",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Porte-Outils Universel",
+          "raw": "Effet : Réduit le temps de minage, de bûcheronnage et de récolte de 25%.",
+          "activationClass": "neutre"
+        }
+      ],
+      "normalized": {
+        "activation": "passive",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "tank",
+      "name": "Batterie Externe \"Tank\"",
+      "family": "neutre",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Batterie Externe \"Tank\"",
+          "raw": "Effet : Augmente le maximum d'énergie de +50, MAIS réduit la vitesse de déplacement du joueur de 10% (la batterie est très lourde).",
+          "activationClass": "neutre"
+        }
+      ],
+      "normalized": {
+        "activation": "passive",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": 50,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Capacité +50 et vitesse −10 % ; assiette de perte passive et slot inconnus.",
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "tow",
+      "name": "Harnais de Remorquage (Coop)",
+      "family": "neutre",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Harnais de Remorquage (Coop)",
+          "raw": "Effet : Permet de porter un autre joueur sur son dos (s'il est en agonie ou déconnecté/AFK).\nContrainte : Le porteur ne peut pas sprinter ",
+          "activationClass": "neutre"
+        }
+      ],
+      "normalized": {
+        "activation": "passive",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "recycler",
+      "name": "Recycleur Portatif",
+      "family": "neutre",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Recycleur Portatif",
+          "raw": "Effet : Permet de détruire des objets inutiles de l'inventaire pour récupérer 50% de leurs composants de base (au lieu de juste les jeter au sol ou au brûleur).",
+          "activationClass": "neutre"
+        }
+      ],
+      "normalized": {
+        "activation": "passive",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "compass",
+      "name": "Compas de Reliques",
+      "family": "neutre",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Compas de Reliques",
+          "raw": "Effet : La boussole émet un léger son ou une vibration lorsque le joueur est à moins de 100 m d'un coffre non ouvert ou d'un secret. Il sonne de plus en plus rapidement lorsque le joueur se rapproche de l’item en question.",
+          "activationClass": "neutre"
+        }
+      ],
+      "normalized": {
+        "activation": "passive",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "extractor",
+      "name": "Extracteur d'Échantillons",
+      "family": "neutre",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Extracteur d'Échantillons",
+          "raw": "Effet : Permet de récolter de la \"Corruption Liquide\" ou des \"Spores Toxiques\" en interagissant avec les nuages toxiques / corruption.\nCraft : Ces ressources servent à fabriquer des armes toxiques, des stimulants puissants et autres…",
+          "activationClass": "neutre"
+        }
+      ],
+      "normalized": {
+        "activation": "passive",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "contamination",
+      "name": "Détecteur de Contamination",
+      "family": "neutre",
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Modules / Détecteur de Contamination",
+          "raw": "Effet : Affiche le niveau de toxicité de la zone (Vert/Jaune/Rouge) et la direction du vent.",
+          "activationClass": "neutre"
+        }
+      ],
+      "normalized": {
+        "activation": "passive",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "pouch",
+      "name": "Petite sacoche",
+      "family": null,
+      "sourceIds": [
+        "SmallPouch1"
+      ],
+      "variants": [
+        {
+          "source": "TD_Modules & Sac à dos.xlsx",
+          "locator": "TD_modules!A2:R2",
+          "fields": {
+            "ID": "SmallPouch1",
+            "Display Name": "Small Pouch",
+            "Display FR": "Petite sacoche",
+            "Biome": "1.0",
+            "Activation": "Passive",
+            "Slot Type": "Down",
+            "Target Type": "Self",
+            "Conso / flux": "0.0"
+          }
+        }
+      ],
+      "normalized": {
+        "activation": "passive",
+        "slots": [
+          "Down"
+        ],
+        "productionPerSecond": null,
+        "consumptionPerSecond": 0,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [],
+      "prototype": {
+        "status": "hypothèse de démonstration",
+        "slots": [
+          "Down"
+        ],
+        "mode": "passive",
+        "consumption": 0,
+        "note": "Flux Excel nul ; capacité de stockage non renseignée."
+      },
+      "status": "partiel",
+      "aliases": [
+        "Petite sacoche"
+      ]
+    },
+    {
+      "id": "battery",
+      "name": "Batterie en cuivre",
+      "family": null,
+      "sourceIds": [
+        "CopperBattery1"
+      ],
+      "variants": [
+        {
+          "source": "TD_Modules & Sac à dos.xlsx",
+          "locator": "TD_modules!A3:R3",
+          "fields": {
+            "ID": "CopperBattery1",
+            "Display Name": "Copper Battery",
+            "Display FR": "Batterie en cuivre",
+            "Biome": "1.0",
+            "Activation": "Passive",
+            "Slot Type": "Down",
+            "Target Type": "Self",
+            "Conso / flux": "10 max energy"
+          }
+        }
+      ],
+      "normalized": {
+        "activation": "passive",
+        "slots": [
+          "Down"
+        ],
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": 10,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [],
+      "prototype": {
+        "status": "hypothèse de démonstration",
+        "slots": [
+          "Down"
+        ],
+        "mode": "passive",
+        "capacity": 10,
+        "note": "Capacité source +10 ; charge initiale gérée séparément."
+      },
+      "status": "partiel",
+      "aliases": [
+        "Batterie en cuivre"
+      ]
+    },
+    {
+      "id": "radar",
+      "name": "Radar de cuivre",
+      "family": null,
+      "sourceIds": [
+        "CopperRadar1"
+      ],
+      "variants": [
+        {
+          "source": "TD_Modules & Sac à dos.xlsx",
+          "locator": "TD_modules!A8:R8",
+          "fields": {
+            "ID": "CopperRadar1",
+            "Display Name": "Copper Radar",
+            "Display FR": "Radar de cuivre",
+            "Biome": "1.0",
+            "Activation": "One-Shot",
+            "Slot Type": "Side",
+            "Target Type": "Environment",
+            "Range": "20 meters",
+            "Cycle": "4 sec",
+            "Conso / flux": "0.0"
+          }
+        }
+      ],
+      "normalized": {
+        "activation": "action",
+        "slots": [
+          "Side"
+        ],
+        "productionPerSecond": null,
+        "consumptionPerSecond": 0,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": 20.0
+      },
+      "issues": [
+        "GDD cité : Top ; Excel : Side. Coût ponctuel et cooldown absents ; cycle 4 s ne signifie pas cooldown."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": [
+        "Radar de cuivre"
+      ]
+    },
+    {
+      "id": "defib",
+      "name": "Défibrillateur personnel",
+      "family": null,
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_3C_&_Metrics.docx",
+          "locator": "Système de santé / Le Défibrillateur",
+          "raw": "À 0 PV : évite agonie, remet à 20 PV et 20 énergie ; consommé ou cooldown non tranché."
+        }
+      ],
+      "normalized": {
+        "activation": "automatic",
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Concept incomplet : spécifier activation, coût, limites et emplacement.",
+        "Emplacement non spécifié dans les données structurées."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "sonar",
+      "name": "Sonar à Ressources",
+      "family": null,
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_3C_&_Metrics.docx",
+          "locator": "MultiTool / L’Information",
+          "raw": "Frapper le sol : impulsion qui révèle les gisements à travers les murs, portée 20 m. Annoté Module."
+        }
+      ],
+      "normalized": {
+        "activation": null,
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Concept incomplet : spécifier activation, coût, limites et emplacement.",
+        "Emplacement non spécifié dans les données structurées.",
+        "Activation normalisée non arrêtée."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "cavity",
+      "name": "Détecteur de Cavité",
+      "family": null,
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_3C_&_Metrics.docx",
+          "locator": "MultiTool / L’Information",
+          "raw": "Avertit si le bloc suivant ouvre sur le vide ou une caverne. Annoté Module."
+        }
+      ],
+      "normalized": {
+        "activation": null,
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Concept incomplet : spécifier activation, coût, limites et emplacement.",
+        "Emplacement non spécifié dans les données structurées.",
+        "Activation normalisée non arrêtée."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "plasma",
+      "name": "Raffinage Plasma",
+      "family": null,
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_3C_&_Metrics.docx",
+          "locator": "MultiTool / Rendement",
+          "raw": "20 % des minerais fer/cuivre/or récoltés en lingots. Statut « MODULE ? » à confirmer."
+        }
+      ],
+      "normalized": {
+        "activation": null,
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Concept incomplet : spécifier activation, coût, limites et emplacement.",
+        "Emplacement non spécifié dans les données structurées.",
+        "Activation normalisée non arrêtée."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "torch",
+      "name": "Repose torche",
+      "family": null,
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "TDD_Survie_&_Gestion.docx",
+          "locator": "Sac à dos / exemples",
+          "raw": "Slot Top dans l’exemple. Coût et effet chiffré absents."
+        }
+      ],
+      "normalized": {
+        "activation": null,
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Concept incomplet : spécifier activation, coût, limites et emplacement.",
+        "Emplacement non spécifié dans les données structurées.",
+        "Activation normalisée non arrêtée."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    },
+    {
+      "id": "energy-to-health",
+      "name": "Conversion énergie vers vie",
+      "family": null,
+      "sourceIds": [],
+      "variants": [
+        {
+          "source": "GDD cité dans la conversation",
+          "locator": "Les modules vampirisme",
+          "raw": "Module symétrique de conversion énergie vers vie ; nom, ratios et cooldown non précisés."
+        }
+      ],
+      "normalized": {
+        "activation": null,
+        "slots": null,
+        "productionPerSecond": null,
+        "consumptionPerSecond": null,
+        "passiveReductionPerSecond": null,
+        "capacityBonus": null,
+        "energyCost": null,
+        "healthCost": null,
+        "energyGain": null,
+        "cooldownSeconds": null,
+        "durationSeconds": null,
+        "rangeMeters": null
+      },
+      "issues": [
+        "Concept incomplet : spécifier activation, coût, limites et emplacement.",
+        "Emplacement non spécifié dans les données structurées.",
+        "Activation normalisée non arrêtée."
+      ],
+      "prototype": null,
+      "status": "à arbitrer",
+      "aliases": []
+    }
+  ],
+  "backpacksRaw": [
+    {
+      "A1": "ID",
+      "B1": "Display Name",
+      "C1": "Display FR",
+      "D1": "Slot module Top",
+      "E1": "Description Eng",
+      "F1": "Description FR",
+      "G1": "Conso / flux",
+      "H1": "Conso activation",
+      "I1": "Cooldown / Min",
+      "J1": "Ressource 1",
+      "K1": "Qté 1",
+      "L1": "Ressource 2",
+      "M1": "Qté 2"
+    },
+    {
+      "A2": "Backpack0a",
+      "C2": "Petit sac en bois",
+      "D2": "Side",
+      "E2": "Grants 10 armor to the user and 5 armor to nearby players within 20m.",
+      "F2": "Accorde 10 d’armure au joueur et 5 d’armure aux alliés à proximité dans un rayon de 20 m.",
+      "G2": "-2.0"
+    },
+    {
+      "A3": "Backpack1a",
+      "C3": "Sac en bois noble",
+      "D3": "Side / Down",
+      "E3": "Increases your maximum energy by 10.",
+      "F3": "Augmente votre énergie maximale de 10.",
+      "G3": "10 max energy"
+    },
+    {
+      "A4": "Backpack2a",
+      "C4": "Sac en cuir",
+      "D4": "Side",
+      "E4": "A module that generates energy by burning resources.",
+      "F4": "Module produisant de l'énergie par combustion de ressources.",
+      "G4": "3.0"
+    },
+    {
+      "A5": "Backpack3a",
+      "C5": "Sac en tissu rafiné rouge",
+      "D5": "Top",
+      "E5": "A scanning module that detects nearby copper deposits.",
+      "F5": "Module de détection qui permet de localiser les gisements de cuivre à proximité.",
+      "G5": "0.0"
+    },
+    {
+      "A6": "Backpack3b",
+      "C6": "Sac en tissu rafiné bleu",
+      "D6": "Side",
+      "E6": "A module that increases damage output of weapons.",
+      "F6": "Module augmentant les dégâts des armes équipés.",
+      "G6": "-2.0"
+    },
+    {
+      "A7": "Backpack4",
+      "C7": "Sac d'éclaireur",
+      "D7": "Side / Down",
+      "E7": "Generates energy from movement and motion.",
+      "F7": "Génère de l’énergie à partir des mouvements.",
+      "G7": "2.0"
+    }
+  ],
+  "backpackIssue": "Les colonnes de Sac a dos mélangent descriptions de modules et sacs ; nombres Side/Down inconnus. Maquette : 2 Top, 2 Side, 2 Down, tous sacs non modélisés.",
+  "orphanSourceText": [
+    {
+      "source": "TDD_Survie_&_Gestion.docx",
+      "locator": "Modules Consommation Instantanée (Action)",
+      "text": "de secour",
+      "issue": "Fragment isolé, identité indéterminable, non créé comme module."
+    }
+  ],
+  "globalArbitrations": [
+    "Assiette et période des pourcentages",
+    "Gain ou réduction pour les chargeurs",
+    "Cumul, doublons et ordre des modificateurs",
+    "Mort immédiate ou famine",
+    "Slots GDD vs Excel vs priorité TDD Survie",
+    "Effet des modules à énergie nulle",
+    "Ordre des événements simultanés",
+    "Recharges, ressources et charges manquantes"
+  ]
+}

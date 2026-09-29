@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CliffDivers Balance Lab</title>
+  <meta name="description" content="Prototype interactif d’équilibrage des modules, de l’énergie et des expéditions de CliffDivers.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect rx='16' width='64' height='64' fill='%23131d1e'/%3E%3Cpath d='M16 18h32v30H16z' fill='%236d412d' stroke='%23d9883d' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='10' fill='%2345e0e8' stroke='%23d9883d' stroke-width='4'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div><strong>CLIFFDIVERS</strong><span>BALANCE LAB</span></div>
+      </div>
+      <nav class="view-tabs" aria-label="Vues de l’application">
+        <button class="tab active" data-view="build">Équipement</button>
+        <button class="tab" data-view="scenario">Scénario</button>
+        <button class="tab" data-view="catalogue">Catalogue</button>
+        <button class="tab" data-view="analysis">Analyse</button>
+        <button class="tab" data-view="profiles">Profils</button>
+        <button class="tab" data-view="rules">Règles</button>
+      </nav>
+      <div class="header-actions">
+        <button id="undo" class="ghost" disabled>Annuler</button>
+        <button id="pin-build" class="secondary">Figer le build A</button>
+      </div>
+    </header>
+
+    <main>
+      <section id="view-build" class="view active" aria-labelledby="build-title">
+        <div class="status-strip">
+          <span class="eyebrow">PROFIL DE DÉMONSTRATION · DEMO-1.3</span>
+          <span class="status-chip documented"><i></i>Documenté</span>
+          <span class="status-chip assumption"><i></i>Hypothèse</span>
+          <span class="status-chip conflict"><i></i>À arbitrer</span>
+          <span id="global-notice" class="global-notice" role="status" aria-live="polite"></span>
+        </div>
+
+        <div class="build-grid">
+          <aside class="module-library panel">
+            <div class="panel-heading">
+              <div><span class="kicker">BIBLIOTHÈQUE</span><h1 id="build-title">Modules</h1></div>
+              <span id="module-count" class="count-badge"></span>
+            </div>
+            <div class="search-row">
+              <input id="module-search" type="search" placeholder="Rechercher un module" aria-label="Rechercher un module">
+              <select id="slot-filter" aria-label="Filtrer par emplacement">
+                <option value="all">Tous</option><option>Top</option><option>Side</option><option>Down</option>
+              </select>
+            </div>
+            <div class="energy-legend" aria-label="Code couleur énergétique">
+              <span class="producer"><i></i>Produit</span><span class="consumer"><i></i>Consomme</span><span class="neutral"><i></i>Neutre</span><span class="action"><i></i>Action</span>
+            </div>
+            <div id="module-list" class="module-list"></div>
+          </aside>
+
+          <section class="bag-panel panel">
+            <div class="panel-heading">
+              <div><span class="kicker">COMPOSITION ACTIVE</span><h2>Votre sac</h2></div>
+              <span id="slot-count" class="count-badge"></span>
+            </div>
+            <p class="helper">Glissez les modules sur les connecteurs. La forme et la couleur donnent leur rôle au premier regard.</p>
+            <div id="bag-stage" class="bag-stage" aria-label="Sac à dos et emplacements de modules">
+              <div class="bag-halo" aria-hidden="true"></div>
+              <img src="./assets/backpack.webp" class="backpack" alt="Sac à dos CliffDivers avec noyau d’énergie cyan">
+              <div class="core-readout" aria-hidden="true"><span id="core-energy">100</span><small>ÉNERGIE</small></div>
+            </div>
+            <div id="selected-detail" class="selected-detail"></div>
+          </section>
+
+          <aside class="telemetry panel">
+            <div class="panel-heading"><div><span class="kicker">TÉLÉMÉTRIE</span><h2>État du build</h2></div><span id="return-pill" class="result-pill"></span></div>
+            <div class="energy-gauge">
+              <svg viewBox="0 0 160 90" role="img" aria-label="Jauge d’énergie">
+                <path class="gauge-track" d="M20 78a60 60 0 0 1 120 0"></path>
+                <path id="gauge-value" class="gauge-value" d="M20 78a60 60 0 0 1 120 0"></path>
+              </svg>
+              <div class="gauge-label"><strong id="energy-now">0</strong><span id="energy-cap">/ 100</span><small>à l’instant observé</small></div>
+            </div>
+            <div class="metric-grid">
+              <div class="metric"><span>Flux net</span><strong id="net-flow">0</strong><small>énergie / s</small></div>
+              <div class="metric"><span>Épuisement</span><strong id="depletion-time">—</strong><small id="depletion-context">sur l’essai</small></div>
+              <div class="metric"><span>Retour</span><strong id="return-energy">0</strong><small>énergie restante</small></div>
+              <div class="metric"><span>Saturation</span><strong id="wasted-energy">0</strong><small>énergie perdue</small></div>
+              <div class="metric"><span>Ressources</span><strong id="scenario-resources">0</strong><small>gagnées par les segments</small></div>
+            </div>
+            <div class="flow-stack"><h3>Flux à cet instant</h3><div id="flow-breakdown"></div></div>
+            <div id="alerts" class="alerts"></div>
+          </aside>
+        </div>
+
+        <section class="analysis-panel panel">
+          <div class="analysis-heading">
+            <div><span class="kicker">EXPÉDITION</span><h2>Profil énergétique</h2></div>
+            <div class="chart-legend"><span class="energy-line">Énergie B</span><span class="health-line">PV B</span><span id="ref-legend" class="ref-line" hidden>Énergie A</span></div>
+          </div>
+          <div id="segment-strip" class="segment-strip"></div>
+          <svg id="energy-chart" class="energy-chart" viewBox="0 0 1000 240" role="img" aria-label="Courbe d’énergie et de santé pendant l’expédition"></svg>
+          <div class="playback-row">
+            <button id="play" class="primary">Lire</button><button id="restart" class="ghost">Revenir au départ</button>
+            <input id="time-cursor" type="range" min="0" max="165" step="0.1" value="0" aria-label="Temps observé">
+            <output id="time-output">0:00 / 2:45</output>
+          </div>
+          <div id="comparison" class="comparison"></div>
+        </section>
+      </section>
+
+      <section id="view-scenario" class="view" aria-labelledby="scenario-title" hidden>
+        <div class="scenario-layout">
+          <section class="panel scenario-builder"><div class="panel-heading"><div><span class="kicker">SÉQUENCEUR</span><h1 id="scenario-title">Scénario d’expédition</h1></div><div class="scenario-toolbar"><select id="scenario-preset"><option value="mixed">Falaise et grotte</option><option value="night">Sortie nocturne</option><option value="rain">Pluie et abri</option></select><button id="add-segment" class="primary">Ajouter un segment</button></div></div><div class="scenario-save-row"><label>Nom du scénario<input id="scenario-name" type="text" value="Falaise et grotte"></label><button id="save-scenario" class="secondary">Enregistrer le scénario</button><select id="saved-scenarios" aria-label="Scénarios enregistrés"><option value="">Scénarios enregistrés…</option></select></div><p class="helper">Construisez librement la chronologie. Chaque segment peut représenter un trajet, un combat, une récolte, une escalade, un repos ou un passage en zone sûre.</p><div id="scenario-segments" class="scenario-segments"></div></section>
+          <aside class="scenario-sidebar"><section class="panel"><span class="kicker">PARAMÈTRES</span><h2>Conditions initiales</h2><div class="form-grid">
+            <label>Charge au départ (%)<input id="initial-energy" type="number" min="0" max="100" value="100"></label>
+            <label>PV au départ<input id="initial-health" type="number" min="1" max="100" value="25"></label>
+            <label>Combustible<input id="initial-fuel" type="number" min="0" max="100" value="2"></label>
+            <label>Flux modules ×<input id="flow-scale" type="number" min="0" max="3" step="0.1" value="1"></label>
+            <label>Énergie maximale de base<input id="base-max-energy" type="number" min="1" max="10000" step="1" value="100"></label>
+            <label>Perte passive (% / s)<input id="passive-drain-rate" type="text" inputmode="decimal" value="0,3"></label>
+            <label>Dégâts de famine (PV / s)<input id="starvation-damage" type="number" min="0" max="1000" step="0.5" value="1"></label>
+            <label>Régénération zone sûre / s<input id="safe-zone-regen" type="number" min="0" max="10000" step="0.5" value="20"></label>
+            <label>Durée d’agonie (s)<input id="agony-duration" type="number" min="0" max="3600" step="1" value="300"></label>
+            <label>Secondes par combustible<input id="fuel-seconds" type="number" min="0.1" max="3600" step="1" value="30"></label>
+            <label>Assiette de perte passive<select id="drain-basis"><option value="base">Capacité de base</option><option value="max">Capacité maximale</option></select></label>
+            <label>À zéro énergie<select id="death-rule"><option value="famine">Famine TDD</option><option value="instant">Mort immédiate GDD</option></select></label>
+            <label>Politique des toggles<select id="toggle-policy"><option value="auto">Automatique selon le contexte</option><option value="manual">États programmés</option></select></label>
+          </div><div id="passive-preview" class="parameter-preview"></div><hr><span class="kicker">ACTIONS</span><h2>Programmer à l’instant observé</h2><p class="helper">Placez le curseur temporel dans Équipement, puis ajoutez une activation, un toggle, une fleur ou l’ouverture d’un donjon.</p><div id="action-buttons" class="action-buttons"></div><div id="action-list" class="action-list"></div></section>
+          <section class="panel probabilistic-settings"><span class="kicker">VARIATIONS</span><h2>Expédition probabiliste</h2><p class="helper">Ces paramètres appartiennent au scénario et seront utilisés par la Monte-Carlo de l’onglet Analyse.</p><div class="form-grid">
+            <label>Biome<select id="mc-biome"></select></label><label>Itérations<input id="mc-iterations" type="number" min="50" max="5000" step="50" value="500"></label>
+            <label>Nombre de POI<input id="mc-pois" type="number" min="1" max="12" value="3"></label><label>Graine aléatoire<input id="mc-seed" type="number" value="42"></label>
+            <label>Distance minimale (m)<input id="mc-distance-min" type="number" min="50" max="3000" value="400"></label><label>Distance maximale (m)<input id="mc-distance-max" type="number" min="50" max="5000" value="800"></label>
+            <label>Vitesse de déplacement (m/s)<input id="mc-speed" type="number" min="1" max="30" step="0.5" value="8"></label><label>Chance de détour (%)<input id="mc-detour" type="number" min="0" max="100" value="35"></label>
+            <label>Chance de blessure (%)<input id="mc-injury" type="number" min="0" max="100" value="12"></label><label>Chance de nuit (%)<input id="mc-night" type="number" min="0" max="100" value="15"></label>
+            <label>Chance de moulin (%)<input id="mc-safe" type="number" min="0" max="100" value="18"></label>
+          </div></section></aside>
+        </div>
+      </section>
+
+      <section id="view-catalogue" class="view" aria-labelledby="catalogue-title" hidden>
+        <section class="panel catalogue-panel"><div class="panel-heading"><div><span class="kicker">DONNÉES CONSOLIDÉES</span><h1 id="catalogue-title">Catalogue des modules</h1></div><span class="count-badge">53 entrées</span></div><p class="helper">Sélectionnez un module simulable pour modifier ses paramètres. La simulation est recalculée immédiatement.</p><div class="catalogue-workspace"><div class="catalogue-picker"><input id="catalogue-search" type="search" placeholder="Rechercher par nom, identifiant ou divergence" aria-label="Rechercher dans le catalogue"><div id="catalogue-list" class="catalogue-list"></div></div><aside id="module-editor" class="module-editor" aria-live="polite"></aside></div></section>
+      </section>
+
+      <section id="view-analysis" class="view" aria-labelledby="analysis-title" hidden>
+        <div class="analysis-workspace">
+          <section class="panel batch-panel"><div class="panel-heading"><div><span class="kicker">MODE LOT</span><h1 id="analysis-title">Analyse automatique des builds</h1></div><button id="run-batch" class="primary">Lancer l’analyse</button></div><p class="helper">Teste toutes les compositions canoniques valides sur les trois scénarios. La puissance est un proxy de prototype explicite.</p><div id="batch-summary" class="analysis-placeholder">Lancez l’analyse pour calculer les dominants, la frontière de Pareto, les taux d’équipement et les seuils de viabilité.</div><div id="batch-results"></div></section>
+          <section class="panel monte-panel"><div class="panel-heading"><div><span class="kicker">EXPÉDITIONS PROBABILISTES</span><h2>Simulation Monte-Carlo</h2></div><button id="run-monte" class="secondary">Simuler ce scénario</button></div><p class="helper">Utilise le profil probabiliste défini dans l’onglet Scénario.</p><div id="mc-config-summary" class="scenario-summary"></div><div id="monte-results" class="analysis-placeholder">Configurez les variations dans Scénario, puis lancez la simulation.</div><p class="source-line">Sources : <a href="https://docs.google.com/document/d/1T09OWO2hwKh7ca9AUVU0gCJyMXF7NNIrZ4SjGygRXb8/edit?tab=t.uvv10dv1720m" target="_blank" rel="noreferrer">P.O.I.</a> · <a href="https://docs.google.com/document/d/1T09OWO2hwKh7ca9AUVU0gCJyMXF7NNIrZ4SjGygRXb8/edit?tab=t.ytxwm7okn4ku" target="_blank" rel="noreferrer">L.D. Biomes</a></p></section>
+        </div>
+      </section>
+
+      <section id="view-profiles" class="view" aria-labelledby="profiles-title" hidden>
+        <div class="profiles-workspace">
+          <section class="panel profile-create"><span class="kicker">PARTAGE & VERSIONING</span><h1 id="profiles-title">Profils d’équilibrage</h1><p class="helper">Nommez un état de travail, ajoutez une note de balance et restaurez-le plus tard.</p><div class="form-grid"><label>Nom de version<input id="version-name" type="text" placeholder="Ex. Batterie v3 — autonomie cible"></label><label class="wide-field">Note de balance<textarea id="version-note" rows="4" placeholder="Décision, intention et point à surveiller…"></textarea></label></div><div class="profile-actions"><button id="save-version" class="primary">Enregistrer la version</button><button id="export-json" class="secondary">Exporter JSON</button><button id="export-csv" class="secondary">Exporter CSV</button><label class="import-button">Importer JSON<input id="import-json" type="file" accept="application/json,.json"></label></div><div id="profile-status" class="helper" role="status"></div></section>
+          <section class="panel"><div class="panel-heading"><div><span class="kicker">VERSIONS NOMMÉES</span><h2>Bibliothèque locale</h2></div><span id="version-count" class="count-badge">0</span></div><div id="version-list" class="version-list"></div></section>
+          <section class="panel"><div class="panel-heading"><div><span class="kicker">JOURNAL</span><h2>Historique des changements</h2></div><button id="clear-log" class="ghost">Vider</button></div><div id="change-log" class="change-log"></div></section>
+        </div>
+      </section>
+
+      <section id="view-rules" class="view" aria-labelledby="rules-title" hidden>
+        <section class="panel rules-panel"><span class="kicker">CONTRAT DE SIMULATION</span><h1 id="rules-title">Règles et hypothèses</h1><div class="rule-grid">
+          <article><span class="rule-number">01</span><h2>Énergie</h2><p>Valeurs par défaut : 100 points et 0,3 %/s de perte passive. Production, consommation et réduction restent des leviers distincts.</p></article>
+          <article><span class="rule-number">02</span><h2>Épuisement</h2><p>Le profil TDD applique 1 PV/s à énergie nulle. La variante GDD déclenche la mort immédiate.</p></article>
+          <article><span class="rule-number">03</span><h2>Actions</h2><p>Une action vérifie état vital, présence du module, cooldown et ressources. Un refus ne dépense rien.</p></article>
+          <article><span class="rule-number">04</span><h2>Hypothèses</h2><p>Deux Top, deux Side et deux Down. Les flux Excel sont interprétés en points/s uniquement dans ce prototype.</p></article>
+        </div><div class="rules-columns"><div><h2>Documenté</h2><ul><li>Capacité de base : 100.</li><li>PV de base : 25.</li><li>Famine : −1 PV/s.</li><li>Agonie : 300 secondes.</li><li>Zone sûre : +20 énergie/s.</li><li>Fleur : +20, recharge 180 s.</li><li>Donjon P1 : −30 énergie.</li></ul></div><div><h2>À arbitrer</h2><ul><li>Assiette de la perte passive.</li><li>Gain ou réduction pour les chargeurs.</li><li>Slots GDD, TDD ou Excel.</li><li>Effets alimentés à énergie nulle.</li><li>Cumul des auras et doublons.</li><li>Priorité des événements simultanés.</li></ul></div></div></section>
+      </section>
+    </main>
+  </div>
+  <div id="module-tooltip" class="module-tooltip" role="tooltip" hidden></div>
+  <div id="parameter-tooltip" class="parameter-tooltip" role="tooltip" hidden></div>
+  <script src="./engine.js"></script>
+  <script src="./analysis.js"></script>
+  <script src="./catalogue-data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
+
