@@ -2,6 +2,27 @@
 
 Prototype interactif d’équilibrage des modules, de l’énergie et des expéditions.
 
+## Version 1.6
+
+- Trois modèles de sac prêts à l’emploi : Éclaireur (4 slots), Explorateur (6) et Porteur (8).
+- Créateur de sacs personnalisés avec 0 à 4 connecteurs Top, Side et Down.
+- Un module peut être équipé sur plusieurs connecteurs compatibles ; chaque exemplaire contribue séparément à la simulation.
+- Les familles Top, Side et Down sont signalées par des repères renforcés autour du visuel du sac.
+- Tous les résultats sont placés dans Équipement, sous le sac : chronologie, comparaison, analyse automatique et Monte-Carlo.
+- L’analyse automatique utilise la disposition du sac actif et autorise les compositions avec plusieurs exemplaires.
+- Les profils JSON conservent le sac actif et les modèles personnalisés.
+
+## Version 1.5
+
+- Modèles pilotes de valeur de gameplay pour les dégâts, l’armure et la lumière.
+- Valeur, famille, déclencheur, politique d’action et politique de toggle éditables dans le catalogue.
+- Les analyses automatiques déclenchent les actions selon leur politique et paient leur coût énergétique.
+- Formule, limites, couverture du modèle et niveau de confiance visibles avec les résultats.
+- Parcours conseillé, introduction courte et exemple commenté chargeable en un clic.
+- Bloc Résultats réunissant déterministe, comparaison A/B, Monte-Carlo et analyse en lot.
+- Retrait des modules utilisable au clavier et graphique de Pareto composé de points sélectionnables.
+- Typographie secondaire relevée pour rester lisible sur ordinateur.
+
 ## Version 1.4
 
 - Sac 2D au centre d’un corridor dégagé, avec trois connecteurs sur chaque rail latéral : Top, Side et Down.
@@ -41,4 +62,3 @@ Elle fonctionne sans installation ni création de compte. Les profils et l’his
 ## Limites actuelles
 
 Le moteur mesure précisément l’énergie et les risques de survie du profil choisi. Les dégâts, l’armure, la lumière, la détection, la récolte et la coopération utilisent encore des proxys ou ne disposent pas de modèle de gameplay complet.
-
