@@ -2,6 +2,15 @@
 
 Prototype interactif d’équilibrage des modules, de l’énergie et des expéditions.
 
+## Version 1.7
+
+- Les commandes « Modèle de sac » et « Créer un sac » sont alignées sur une même ligne dans Équipement.
+- Les indicateurs « énergie au retour », « valeur de gameplay » et « énergie payée en actions » disposent d’une aide `?` utilisable au survol, au clavier et au clic.
+- Le Catalogue permet de créer un module entièrement nouveau, de le nommer, de définir ses flux, son mode, ses conditions, ses effets et ses slots, puis de l’équiper immédiatement.
+- Les modules personnalisés sont conservés localement et inclus dans les exports JSON.
+- Les événements manuels à l’instant observé ont quitté l’écran Scénario. Ils restent disponibles dans un bloc avancé replié sous la chronologie, pour reproduire un événement exact sans alourdir la création de scénario.
+- Un résumé analytique explique le résultat déterministe, puis détaille chaque segment : variation d’énergie, flux dominants, événements importants et accès direct au moment concerné sur la courbe.
+
 ## Version 1.6
 
 - Trois modèles de sac prêts à l’emploi : Éclaireur (4 slots), Explorateur (6) et Porteur (8).
@@ -57,7 +66,7 @@ Elle fonctionne sans installation ni création de compte. Les profils et l’his
 - Syntaxe des trois scripts vérifiée.
 - 37 tests de non-régression réussis : 24 moteur, 5 configuration et 8 analyse.
 - Contrôles supplémentaires couvrant les variations de segment, la Monte-Carlo et l’activation d’un module incomplet.
-- Parcours navigateur vérifié sur un écran 1440 × 1000 : sac, création de segment, perte passive avec virgule, aide contextuelle, emplacement des paramètres Monte-Carlo et résultat probabiliste.
+- Parcours navigateur vérifié sur ordinateur : sac, création de segment, perte passive avec virgule, aide contextuelle, création et équipement d’un module personnalisé, analyse segment par segment, emplacement des paramètres Monte-Carlo et résultat probabiliste.
 
 ## Limites actuelles
 

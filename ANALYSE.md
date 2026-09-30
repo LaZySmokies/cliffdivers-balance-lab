@@ -1,5 +1,23 @@
 # Analyse du prototype — CliffDivers Balance Lab
 
+## Mise à jour 1.7 — modules personnalisés et explication des résultats
+
+- Le sélecteur de modèle et le créateur de sac partagent désormais le même alignement visuel. Le choix principal reste immédiatement lisible et l’action secondaire n’introduit plus de décalage.
+- Les trois indicateurs de décision du profil énergétique expliquent leur définition et leur portée via la même aide contextuelle que le reste de l’application.
+- Une nouvelle fiche part de zéro dans le Catalogue. Elle reçoit un identifiant stable, peut être renommée et accepte tous les paramètres énergétiques, les règles d’usage, la famille de gameplay, les slots et une description. Elle apparaît ensuite dans la bibliothèque d’Équipement.
+- La sauvegarde automatique et l’export JSON conservent les modules créés. Chaque champ dispose de son propre délai de saisie afin que deux modifications rapides ne s’annulent pas mutuellement.
+- Les commandes d’événement manuel servent à injecter une activation exacte au curseur de la chronologie. Elles sont utiles pour reproduire un cas de test ou vérifier un coût ponctuel, mais elles ne décrivent pas la structure générale d’un scénario. Elles ont donc été déplacées sous la courbe dans « Événements manuels avancés », replié par défaut.
+- Le résumé analytique commence par la cause principale du résultat, puis déroule chaque segment avec ses bornes temporelles, son milieu, son bilan énergétique, ses trois flux dominants et ses événements critiques. Le bouton « Observer » place le curseur au milieu du segment correspondant.
+
+### Contrôles effectués
+
+- Alignement des commandes du sac contrôlé dans l’interface ordinateur.
+- Aide « Énergie au retour » ouverte et lue depuis le bloc Résultats.
+- Module personnalisé créé, renommé, réglé à `+1,25 énergie/s`, retrouvé par la recherche, puis équipé sur Down 2 ; le sac est passé de 5/6 à 6/6 et le flux net a été recalculé.
+- Persistance d’un module personnalisé contrôlée après rechargement.
+- L’écran Scénario ne contient plus les actions manuelles ; le bloc avancé reste présent sous la chronologie d’Équipement.
+- Les trois boutons « Observer » du scénario de démonstration déplacent bien l’instant observé vers le segment choisi.
+
 ## Mise à jour 1.6 — sacs configurables et résultats intégrés
 
 - Le modèle de sac définit désormais le nombre de slots par famille. Les presets proposent 4, 6 ou 8 emplacements.
