@@ -6,7 +6,7 @@
   <title>CliffDivers Balance Lab</title>
   <meta name="description" content="Prototype interactif d’équilibrage des modules, de l’énergie et des expéditions de CliffDivers.">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect rx='16' width='64' height='64' fill='%23131d1e'/%3E%3Cpath d='M16 18h32v30H16z' fill='%236d412d' stroke='%23d9883d' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='10' fill='%2345e0e8' stroke='%23d9883d' stroke-width='4'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./styles.css?v=1.6">
+  <link rel="stylesheet" href="./styles.css?v=1.7.3">
 </head>
 <body>
   <div class="app-shell">
@@ -47,7 +47,7 @@
           <div class="welcome-actions"><button id="load-guided-example" class="primary">Charger l’exemple commenté</button><button id="dismiss-guide" class="ghost">Masquer</button></div>
         </section>
         <div class="status-strip">
-          <span class="eyebrow">PROFIL DE DÉMONSTRATION · DEMO-1.6</span>
+          <span class="eyebrow">PROFIL DE DÉMONSTRATION · DEMO-1.7</span>
           <span class="status-chip documented"><i></i>Documenté</span>
           <span class="status-chip assumption"><i></i>Hypothèse</span>
           <span class="status-chip conflict"><i></i>À arbitrer</span>
@@ -130,7 +130,7 @@
             <label>Assiette de perte passive<select id="drain-basis"><option value="base">Capacité de base</option><option value="max">Capacité maximale</option></select></label>
             <label>À zéro énergie<select id="death-rule"><option value="famine">Famine TDD</option><option value="instant">Mort immédiate GDD</option></select></label>
             <label>Politique des toggles<select id="toggle-policy"><option value="auto">Automatique selon le contexte</option><option value="manual">États programmés</option></select></label>
-          </div><div id="passive-preview" class="parameter-preview"></div><hr><span class="kicker">ACTIONS</span><h2>Programmer à l’instant observé</h2><p class="helper">Placez le curseur temporel dans Équipement, puis ajoutez une activation, un toggle, une fleur ou l’ouverture d’un donjon.</p><div id="action-buttons" class="action-buttons"></div><div id="action-list" class="action-list"></div></section>
+          </div><div id="passive-preview" class="parameter-preview"></div></section>
           <section class="panel probabilistic-settings"><span class="kicker">MONTE-CARLO</span><h2>Paramètres de calcul</h2><p class="helper">Les variations de terrain sont définies dans chaque segment. Ces deux valeurs règlent seulement la précision et la reproductibilité du calcul.</p><div class="form-grid">
             <label>Itérations<input id="mc-iterations" type="number" min="50" max="5000" step="50" value="500"></label>
             <label>Graine aléatoire<input id="mc-seed" type="number" value="42"></label>
@@ -139,7 +139,7 @@
       </section>
 
       <section id="view-catalogue" class="view" aria-labelledby="catalogue-title" hidden>
-        <section class="panel catalogue-panel"><div class="panel-heading"><div><span class="kicker">DONNÉES CONSOLIDÉES</span><h1 id="catalogue-title">Catalogue des modules</h1></div><span class="count-badge">53 entrées</span></div><p class="helper">Tous les modules peuvent recevoir un prototype de simulation. Les paramètres incomplets restent signalés comme hypothèses jusqu’à leur validation.</p><div class="catalogue-workspace"><div class="catalogue-picker"><input id="catalogue-search" type="search" placeholder="Rechercher par nom, identifiant ou divergence" aria-label="Rechercher dans le catalogue"><div id="catalogue-list" class="catalogue-list"></div></div><aside id="module-editor" class="module-editor" aria-live="polite"></aside></div></section>
+        <section class="panel catalogue-panel"><div class="panel-heading"><div><span class="kicker">DONNÉES CONSOLIDÉES</span><h1 id="catalogue-title">Catalogue des modules</h1></div><div class="catalogue-heading-actions"><span id="catalogue-count" class="count-badge"></span><button id="create-new-module" class="primary">Nouveau module</button></div></div><p class="helper">Créez un module ou transformez une fiche incomplète en prototype, puis réglez toutes ses valeurs pour le tester dans Équipement.</p><div class="catalogue-workspace"><div class="catalogue-picker"><input id="catalogue-search" type="search" placeholder="Rechercher par nom, identifiant ou divergence" aria-label="Rechercher dans le catalogue"><div id="catalogue-list" class="catalogue-list"></div></div><aside id="module-editor" class="module-editor" aria-live="polite"></aside></div></section>
       </section>
 
       <section id="build-results" class="embedded-results" aria-labelledby="analysis-title" hidden>
@@ -160,6 +160,8 @@
             <input id="time-cursor" type="range" min="0" max="165" step="0.1" value="0" aria-label="Temps observé">
             <output id="time-output">0:00 / 2:45</output>
           </div>
+          <details class="manual-events"><summary>Événements manuels avancés <span>optionnel</span></summary><p class="helper">Ajoutez au temps observé une activation exacte, un changement ON/OFF, une fleur ou une ouverture de donjon. Ces événements modifient directement la courbe, les coûts et les cooldowns.</p><div id="action-buttons" class="action-buttons"></div><div id="action-list" class="action-list"></div></details>
+          <section class="simulation-explanation" aria-labelledby="simulation-explanation-title"><div class="analysis-heading"><div><span class="kicker">LECTURE GUIDÉE</span><h3 id="simulation-explanation-title">Pourquoi ce résultat ?</h3></div><span class="explanation-badge">SEGMENT PAR SEGMENT</span></div><div id="simulation-summary"></div><div id="segment-analysis" class="segment-analysis"></div></section>
           <div id="comparison" class="comparison"></div>
         </section>
         <div class="analysis-workspace">
@@ -183,9 +185,9 @@
   </div>
   <div id="module-tooltip" class="module-tooltip" role="tooltip" hidden></div>
   <div id="parameter-tooltip" class="parameter-tooltip" role="tooltip" hidden></div>
-  <script src="./engine.js?v=1.6"></script>
-  <script src="./analysis.js?v=1.6"></script>
-  <script src="./catalogue-data.js?v=1.6"></script>
-  <script src="./app.js?v=1.6"></script>
+  <script src="./engine.js?v=1.7.3"></script>
+  <script src="./analysis.js?v=1.7.3"></script>
+  <script src="./catalogue-data.js?v=1.7"></script>
+  <script src="./app.js?v=1.7.3"></script>
 </body>
 </html>
